@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, ScrollView, TextInput, Pressable, Dimens
 
 export default function LoginPage({navigation}) {
   
-    const [ehmail, setEmail] = useState(null)
+    const [email, setEmail] = useState(null)
     const [password, setPassword] = useState(null)
   
     return (
