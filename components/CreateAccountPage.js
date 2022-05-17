@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View,  TextInput,  Dimensions, Button, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View,  TextInput,  Dimensions, Button, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
 
 export default function CreateAccountPage({navigation}) {
@@ -76,9 +76,11 @@ export default function CreateAccountPage({navigation}) {
           />
         </View>
 
-        <View style={styles.button}>
-          <Button title='Sign Up' disabled={loading} onPress={() => signUp()} />
-          </View>
+        <TouchableOpacity style={styles.button} onPress={() => signUp()}>
+          <Text style={{color:'white', fontFamily:'Roboto', fontWeight:'bold'}}>
+            SIGN UP
+            </Text>
+          </TouchableOpacity>
         
   
       </KeyboardAvoidingView>
