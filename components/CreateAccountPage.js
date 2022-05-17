@@ -1,11 +1,29 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput, Pressable, Dimensions, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View,  TextInput,  Dimensions, Button, KeyboardAvoidingView } from 'react-native';
+import { supabaseClient } from '../supabaseClient';
 
 export default function CreateAccountPage({navigation}) {
-    const [name, setName] = useState(null)
-    const [email, setEmail] = useState(null)
-    const [password, setPassword] = useState(null)
-    const [cpassword, setCpassword] = useState(null)
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [cpassword, setCpassword] = useState('')
+    const[loading, setLoading] = useState(false)
+
+    async function signUp() {
+      setLoading(true)
+      const { user, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password,
+      },
+      {
+        data: {
+          name: name
+        }
+      })
+  
+      if (error) Alert.alert(error.message)
+      setLoading(false)
+    }
   
     return(
       <KeyboardAvoidingView behavior={'height'} enabled={false} style={styles.container}>
@@ -23,7 +41,8 @@ export default function CreateAccountPage({navigation}) {
           <TextInput
             style={styles.textInput}
             placeholder="name"
-            onChangeText={(newName) => setName(newName)}
+            onChangeText={(name) => setName(name)}
+            autoCapitalize='words'
           />
         </View>
   
@@ -31,7 +50,8 @@ export default function CreateAccountPage({navigation}) {
           <TextInput
             style={styles.textInput}
             placeholder="email"
-            onChangeText={(newEmail) => setEmail(newEmail)}
+            onChangeText={(email) => setEmail(email)}
+            autoCapitalize='none'
           />
         </View>
   
@@ -40,7 +60,9 @@ export default function CreateAccountPage({navigation}) {
             style={styles.textInput}
             placeholder="password"
             secureTextEntry={true}
-            onChangeText={(newPassword) => setPassword(newPassword)}
+            onChangeText={(password) => setPassword(password)}
+            autoCapitalize='none'
+            
           />
         </View>
   
@@ -49,15 +71,15 @@ export default function CreateAccountPage({navigation}) {
             style={styles.textInput}
             placeholder="confirm password"
             secureTextEntry={true}
-            onChangeText={(newCpassword) => setPassword(newCpassword)}
+            onChangeText={(cpassword) => setPassword(cpassword)}
+            autoCapitalize='none'
           />
         </View>
-  
-        <TouchableOpacity style={styles.button}>
-          <Text style={{color:'white', fontFamily:"Roboto", fontWeight:'bold'}}>
-            CONFIRM
-          </Text>
-        </TouchableOpacity>
+
+        <View style={styles.button}>
+          <Button title='Sign Up' disabled={loading} onPress={() => signUp()} />
+          </View>
+        
   
       </KeyboardAvoidingView>
     );

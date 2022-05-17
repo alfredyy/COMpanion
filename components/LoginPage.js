@@ -1,11 +1,23 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TextInput, Pressable, Dimensions, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-
+import { supabaseClient } from '../supabaseClient';
 
 export default function LoginPage({navigation}) {
+  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   
-    const [email, setEmail] = useState(null)
-    const [password, setPassword] = useState(null)
+
+  async function handleLogin() {
+    setLoading(true)
+    const { user, error } = await supabase.auth.signIn({
+      email: email,
+      password: password,
+    })
+
+    if (error) Alert.alert(error.message)
+    setLoading(false)
+  }
   
     return (
   
@@ -34,7 +46,7 @@ export default function LoginPage({navigation}) {
           />
         </View>
       
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
           <Text style={{color:'white', fontFamily:"Roboto", fontWeight:'bold'}}>
             LOGIN
           </Text>
@@ -42,7 +54,10 @@ export default function LoginPage({navigation}) {
   
         <Text style={{fontFamily:"Roboto"}}>No account? Create one here!</Text>
   
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("CreateAccountPage")}>
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate("CreateAccount")}
+          >
           <Text style={{color:'white', fontFamily:"Roboto", fontWeight:'bold'}}>
             CREATE AN ACCOUNT
           </Text>
