@@ -14,7 +14,7 @@ export default function App() {
 
       <View style={styles.header}>
             <Text style={styles.title}>To Do List</Text>
-        </View>
+      </View>
 
       <View style={styles.content}>
         {/*to form*/}
@@ -44,22 +44,31 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto'
   },
   content: {
-    padding: 10,
-    backgroundColor: 'coral'
+    flex: 1,
+    backgroundColor: 'white',
+    paddingLeft: 165,
+    paddingRight: 165,
+    marginTop: 20,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+
   },
   list: {
     marginTop: 20
   },
   header: {
-    height: 80,
-    paddingTop: 38,
-    backgroundColour: 'grey',
-},
-title: {
-    textAlign: 'right',
-    colour: 'white',
-    fontSize: 32,
+    justifyContent: 'center',
+    marginTop: 30,
+    paddingLeft: 100,
+    paddingRight: 100,
+    flex: 0.13,
+    backgroundColor: 'white',
+    borderRadius: 13,
+ },
+ title: {
+    textAlign: 'center',
+    fontSize: 25,
     fontWeight: 'bold',
-    fontFamily: 'Roboto'
-}
+ 
+ }
 });
