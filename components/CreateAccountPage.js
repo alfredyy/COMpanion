@@ -76,7 +76,7 @@ export default function CreateAccountPage({navigation}) {
           />
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={() => signUp()}>
+        <TouchableOpacity style={styles.button} onPress={() => signUp()} disabled={loading}>
           <Text style={{color:'white', fontFamily:'Roboto', fontWeight:'bold'}}>
             SIGN UP
             </Text>

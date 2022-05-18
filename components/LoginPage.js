@@ -10,7 +10,7 @@ export default function LoginPage({navigation}) {
 
   async function handleLogin() {
     setLoading(true)
-    const { user, error } = await supabase.auth.signIn({
+    const { user, error } = await supabaseClient.auth.signIn({
       email: email,
       password: password,
     })
@@ -34,6 +34,7 @@ export default function LoginPage({navigation}) {
             style={styles.textInput}
             placeholder="email"
             onChangeText={(newEmail) => setEmail(newEmail)}
+            autoCapitalize='none'
           />
         </View>
    
@@ -43,6 +44,7 @@ export default function LoginPage({navigation}) {
             placeholder="password"
             secureTextEntry={true}
             onChangeText={(newPassword) => setPassword(newPassword)}
+            autoCapitalize='none'
           />
         </View>
       

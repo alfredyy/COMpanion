@@ -1,11 +1,13 @@
 
 import React, {useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput, Pressable, Dimensions, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { supabaseClient } from './supabaseClient';
+import { Session } from '@supabase/supabase-js'
+
 import LoginPage from './components/LoginPage';
 import CreateAccountPage from './components/CreateAccountPage';
-import { supabaseClient } from './supabaseClient';
+import HomePage from './components/HomePage'
 
 const Stack = createNativeStackNavigator();
 
@@ -26,8 +28,14 @@ export default function App() {
           screenOptions={{
             headerShown: false
           }}>
-          <Stack.Screen name="Login" component={LoginPage} />
-          <Stack.Screen name="CreateAccount" component={CreateAccountPage} />
+            {session == null ? (
+            <>
+              <Stack.Screen name="Login" component={LoginPage} />
+              <Stack.Screen name="CreateAccount" component={CreateAccountPage} />
+            </>
+            ) : (
+              <Stack.Screen name="Home" component={HomePage} />
+            )}
         </Stack.Navigator>
     </NavigationContainer>
   );
