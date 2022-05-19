@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View,  TextInput,  Dimensions, Button, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View,  TextInput,  Dimensions, Button, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
 
 export default function CreateAccountPage({navigation}) {
@@ -10,6 +10,15 @@ export default function CreateAccountPage({navigation}) {
     const[loading, setLoading] = useState(false)
 
     async function signUp() {
+      const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+
+      if (password.length <= 5) {
+        Alert.alert('Error', 'Password not long enough')
+      } else if (password != cpassword) {
+        Alert.alert('Error', 'Ensure your passwords are identical')
+      } else if (reg.test(email) === false) {
+        Alert.alert('Error', 'Invalid email')
+      } else {
       setLoading(true)
       const { user, error } = await supabaseClient.auth.signUp({
         email: email,
@@ -24,6 +33,7 @@ export default function CreateAccountPage({navigation}) {
       if (error) Alert.alert(error.message)
       setLoading(false)
     }
+  }
   
     return(
       <KeyboardAvoidingView behavior={'height'} enabled={false} style={styles.container}>
@@ -71,7 +81,7 @@ export default function CreateAccountPage({navigation}) {
             style={styles.textInput}
             placeholder="confirm password"
             secureTextEntry={true}
-            onChangeText={(cpassword) => setPassword(cpassword)}
+            onChangeText={(cpassword) => setCpassword(cpassword)}
             autoCapitalize='none'
           />
         </View>
