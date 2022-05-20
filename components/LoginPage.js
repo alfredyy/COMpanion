@@ -1,22 +1,26 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput, Pressable, Dimensions, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, TextInput, Pressable, Dimensions, TouchableOpacity, KeyboardAvoidingView, Alert } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
 
 export default function LoginPage({navigation}) {
-  const [loading, setLoading] = useState(false)
+  let loading = false
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   
 
   async function handleLogin() {
-    setLoading(true)
-    const { user, error } = await supabaseClient.auth.signIn({
-      email: email,
-      password: password,
-    })
-
-    if (error) Alert.alert(error.message)
-    setLoading(false)
+    try {
+      loading = true
+      const { error } = await supabaseClient.auth.signIn({
+        email: email,
+        password: password,
+      })
+      if (error) throw error;
+    } catch(error) {
+      Alert.alert("Check Login Details!")
+    } finally {
+      loading = false
+    }
   }
   
     return (
