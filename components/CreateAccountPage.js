@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View,  TextInput,  Dimensions, Button, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
+import { BarPasswordStrengthDisplay } from 'react-native-password-strength-meter'
 
 export default function CreateAccountPage({navigation}) {
     const [name, setName] = useState('')
@@ -12,10 +13,10 @@ export default function CreateAccountPage({navigation}) {
     async function signUp() {
       const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
-      if (password.length <= 5) {
+      if (password.length <= 6) {
         Alert.alert('Error', 'Password not long enough')
       } else if (password != cpassword) {
-        Alert.alert('Error', 'Ensure your passwords are identical')
+        Alert.alert('Error', 'Passwords do not match')
       } else if (reg.test(email) === false) {
         Alert.alert('Error', 'Invalid email')
       } else {
@@ -43,7 +44,7 @@ export default function CreateAccountPage({navigation}) {
           welcome to the family!
         </Text>
   
-        <Text style={{ fontSize: 18, color:'white',position:"absolute", top:'15%', fontFamily:'Roboto', margin:10}}>
+        <Text style={{ fontSize: 18, color:'white',position:"absolute", top:'13%', fontFamily:'Roboto', margin:10}}>
           let us get to know you better
         </Text>
   
@@ -64,7 +65,7 @@ export default function CreateAccountPage({navigation}) {
             autoCapitalize='none'
           />
         </View>
-  
+
         <View style={styles.inputField}>
           <TextInput
             style={styles.textInput}
@@ -72,10 +73,15 @@ export default function CreateAccountPage({navigation}) {
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}
             autoCapitalize='none'
-            
           />
         </View>
-  
+
+        <BarPasswordStrengthDisplay
+          password={password}
+          minLength={6}
+          width={280}
+        />
+
         <View style={styles.inputField}>
           <TextInput
             style={styles.textInput}
@@ -110,7 +116,7 @@ export default function CreateAccountPage({navigation}) {
       width:"80%",
       borderRadius:25,
       height:55,
-      marginBottom:20,
+      marginTop:15,
       justifyContent:"center",
       padding:20
    },
