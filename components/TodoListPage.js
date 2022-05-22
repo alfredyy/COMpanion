@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import React, {useState} from 'react';
 
 
-export default function App() {
+export default function TodoList() {
   const[todos, setTodos] = useState([
     { text: 'dummytask1', key: '1' },
     { text: 'dummytask2', key: '2' },
