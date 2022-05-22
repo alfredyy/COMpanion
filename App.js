@@ -7,9 +7,20 @@ import { Session } from '@supabase/supabase-js'
 
 import LoginPage from './components/LoginPage';
 import CreateAccountPage from './components/CreateAccountPage';
-import HomePage from './components/HomePage'
+import HomePage from './components/HomePage';
+import TodoList from './components/TodoListPage';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function tabBar() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomePage({navigation})} /> //note to nic if cant work, try component={HomePage}
+      <Tab.Screen name="TodoList" component={TodoList} />
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -34,7 +45,7 @@ export default function App() {
               <Stack.Screen name="CreateAccount" component={CreateAccountPage} />
             </>
             ) : (
-              <Stack.Screen name="Home" component={HomePage} />
+              <Stack.Screen name="Home" component={tabBar} />
             )}
         </Stack.Navigator>
     </NavigationContainer>
