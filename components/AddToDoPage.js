@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto';
@@ -60,6 +60,9 @@ export default function AddToDoPage({ navigation }) {
     }
 
     return (
+        <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+          }}>
         <View style={styles.container}>
             <View style={styles.inputField}>
                 <TextInput
@@ -108,6 +111,7 @@ export default function AddToDoPage({ navigation }) {
             </TouchableOpacity>
 
         </View>
+        </TouchableWithoutFeedback>
     )
 }
 
