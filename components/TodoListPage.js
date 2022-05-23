@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import React, {useState} from 'react';
+import TodoItem from './TodoListPage1';
 
 
 export default function TodoList() {
@@ -10,27 +11,30 @@ export default function TodoList() {
   ]);
 
   return (
+    <TouchableWithoutFeedback onPress={() => {
+      Keyboard.dismiss();
+    }}>
     <View style={styles.container}>
 
       <View style={styles.header}>
             <Text style={styles.title}>To Do List</Text>
       </View>
 
-      <View style={styles.content}>
-        {/*to form*/}
+     
 
         <View style={styles.list}>
           <FlatList
             data={todos}
             renderItem={({ item }) => (
-              <Text>{item.text}</Text>
+              <TodoItem item={item} />
             )}
           />
         </View>
 
-      </View>
+      
   
     </View>
+    </TouchableWithoutFeedback>
   );
 
 }
@@ -43,18 +47,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontFamily: 'Roboto'
   },
-  content: {
-    flex: 1,
-    backgroundColor: 'white',
-    paddingLeft: 165,
-    paddingRight: 165,
-    marginTop: 20,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+  // content: {
+  //   flex: 1,
+  //   backgroundColor: 'white',
+  //   paddingLeft: 170,
+  //   paddingRight: 170,
+  //   marginTop: 20,
+  //   marginBottom: 100,
+  //   borderRadius: 25,
+  //   // borderTopLeftRadius: 25,
+  //   // borderTopRightRadius: 25,
 
-  },
+  // },
   list: {
-    marginTop: 20
+    backgroundColor: 'yellow',
+    flex: 1,
+   backgroundColor: 'white',
+    paddingLeft: 180,
+    paddingRight: 180,
+    marginTop: 20,
+    marginBottom: 100,
+    borderRadius: 25,
+
   },
   header: {
     justifyContent: 'center',
