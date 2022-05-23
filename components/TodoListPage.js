@@ -47,28 +47,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontFamily: 'Roboto'
   },
-  // content: {
-  //   flex: 1,
-  //   backgroundColor: 'white',
-  //   paddingLeft: 170,
-  //   paddingRight: 170,
-  //   marginTop: 20,
-  //   marginBottom: 100,
-  //   borderRadius: 25,
-  //   // borderTopLeftRadius: 25,
-  //   // borderTopRightRadius: 25,
 
-  // },
   list: {
-    backgroundColor: 'yellow',
+    backgroundColor: 'white',
     flex: 1,
-   backgroundColor: 'white',
-    paddingLeft: 180,
-    paddingRight: 180,
     marginTop: 20,
     marginBottom: 100,
     borderRadius: 25,
-
+    paddingTop: 20,
+    paddingLeft: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+   
   },
   header: {
     justifyContent: 'center',

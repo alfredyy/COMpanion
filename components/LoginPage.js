@@ -24,9 +24,9 @@ export default function LoginPage({navigation}) {
   }
   
     return (
-  
+     
       <KeyboardAvoidingView behavior={'height'} enabled={false} style={styles.container}>
-      
+    
         <View style={styles.rectangleLogin}></View>
   
         <Text style={{ fontSize: 32, color:'white',position:"absolute", top:'18%', fontFamily:'Roboto', fontWeight:'bold'}}>
@@ -68,8 +68,9 @@ export default function LoginPage({navigation}) {
             CREATE AN ACCOUNT
           </Text>
         </TouchableOpacity>
-  
+        
       </KeyboardAvoidingView>
+     
     );
   }
 

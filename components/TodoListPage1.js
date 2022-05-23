@@ -11,11 +11,14 @@ export default function TodoItem({item}) {
 
 const styles = StyleSheet.create({
     item: {
-        marginTop: 16,
-        width: 100,
+        marginTop: 10,
+        width: 360,
+        height: 50,
         borderColor: '#000',
-        borderWidth: 2,
-        borderStyle: 'dashed',
-        borderRadius: 5
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderRadius: 5,
+        textAlign: 'center',
+        textAlignVertical: 'center',
     }
 })
