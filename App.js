@@ -10,9 +10,23 @@ import LoginPage from './components/LoginPage';
 import CreateAccountPage from './components/CreateAccountPage';
 import HomePage from './components/HomePage';
 import TodoList from './components/TodoListPage';
+import AddToDoPage from './components/AddToDoPage';
 
 const Stack = createNativeStackNavigator();
 
+const Tab = createBottomTabNavigator();
+
+function HomeTabs() {
+  return (
+    <Tab.Navigator screenOptions={{
+      headerShown: false
+    }}>
+      <Tab.Screen name="Home" component={HomePage} />
+      <Tab.Screen name="TodoList" component={TodoList} />
+      <Tab.Screen name="AddToDo" component={AddToDoPage} />
+    </Tab.Navigator>
+  );
+}
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -37,7 +51,7 @@ export default function App() {
               <Stack.Screen name="CreateAccount" component={CreateAccountPage} />
             </>
             ) : (
-              <Stack.Screen name="Home" component={HomePage} />
+              <Stack.Screen name="HomeTabs" component={HomeTabs} />
             )}
         </Stack.Navigator>
     </NavigationContainer>
