@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto';
 // import Toast from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 
 
 
@@ -32,11 +33,35 @@ export default function AddToDoPage({ navigation }) {
         setMode('time')
     }
 
+    const timeFormatter = () => {
+        let hours = datetime.getHours()
+        let ampm = "am"
+        if (hours >= 12) {
+            ampm = "pm"
+            if (hours > 12) {
+                hours -= 12
+            }
+        }
+        let minutes = datetime.getMinutes()
+        if (minutes < 10) {
+            minutes = '0' + minutes.toString()
+        }
+        return hours + ':' + minutes + ampm
+    }
+
     const submitToDo = async () => {
         if (item_name.length == 0) {
-            Alert.alert("Error", "Item name cannot be empty!")
+            Toast.show({
+                type: 'error',
+                text1: 'Incomplete Field',
+                text2: 'Task Name cannot be empty!'
+              });
         } else if (datetime < new Date()) {
-            Alert.alert("Invalid date", "Time travelling to the past is not allowed!")
+            Toast.show({
+                type: 'error',
+                text1: 'Time Travelling Detected',
+                text2: 'Ensure that event starts later than current time!'
+              });
         } else {
             try {
                 loading = true
@@ -51,10 +76,17 @@ export default function AddToDoPage({ navigation }) {
                     }])
                 if (error) throw error
             } catch (error) {
-                Alert.alert("Error", error.message)
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error',
+                    text2: error.message
+                  });
             } finally {
                 loading = false
-                Alert.alert("Success!", "To-do is successfully added")
+                Toast.show({
+                    type: 'success',
+                    text1: 'Task Added!',
+                  });
             }
         }
     }
@@ -62,55 +94,64 @@ export default function AddToDoPage({ navigation }) {
     return (
         <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
-          }}>
-        <View style={styles.container}>
-            <View style={styles.inputField}>
-                <TextInput
-                    style={styles.inputText}
-                    placeholder='Item Name'
-                    maxLength={50}
-                    onChangeText={(itemName => setItemName(itemName))}
-                />
+        }}>
+            <View style={styles.container}>
+
+                <View style={styles.header}>
+                    <Text style={styles.title}>Add Task</Text>
+                </View>
+
+                <View style={styles.rectangle}>
+
+                    <View style={styles.inputField}>
+                        <TextInput
+                            style={styles.inputText}
+                            placeholder='Task Name'
+                            maxLength={50}
+                            onChangeText={(itemName => setItemName(itemName))}
+                        />
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <TouchableOpacity style={styles.inputFieldDT} onPress={showDate}>
+                            <Text style={{ fontFamily: "Roboto" }}>
+                                {datetime.toLocaleDateString()}
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.inputFieldDT} onPress={showTime}>
+                            <Text style={{ fontFamily: "Roboto" }}>
+                                {timeFormatter()}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    {show && (
+                        <DateTimePicker
+                            mode={mode}
+                            onChange={onChange}
+                            value={datetime}
+                            minimumDate={Date.now()} />
+                    )}
+
+                    <View style={styles.inputFieldDesc}>
+                        <TextInput
+                            style={styles.inputTextDesc}
+                            placeholder='Notes'
+                            multiline={true}
+                            numberOfLines={4}
+                            maxLength={1000}
+                            onChangeText={(desc => setDesc(desc))}
+                        />
+                    </View>
+
+                    <TouchableOpacity style={styles.button} onPress={() => submitToDo()}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            DONE
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <Toast />
             </View>
-            <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity style={styles.inputFieldDT} onPress={showDate}>
-                    <Text style={{ fontFamily: "Roboto" }}>
-                        {datetime.toLocaleDateString()}
-                    </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.inputFieldDT} onPress={showTime}>
-                    <Text style={{ fontFamily: "Roboto" }}>
-                        {datetime.getHours() + ":" + datetime.getMinutes() }
-                    </Text>
-                </TouchableOpacity>
-            </View>
-            {show && (
-                <DateTimePicker
-                    mode={mode}
-                    onChange={onChange}
-                    value={datetime}
-                    minimumDate={Date.now()} />
-            )}
-
-            <View style={styles.inputFieldDesc}>
-                <TextInput
-                    style={styles.inputTextDesc}
-                    placeholder='Description'
-                    multiline={true}
-                    numberOfLines={4}
-                    maxLength={1000}
-                    onChangeText={(desc => setDesc(desc))}
-                />
-            </View>
-
-            <TouchableOpacity style={styles.button} onPress={() => submitToDo()}>
-                <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
-                    DONE
-                </Text>
-            </TouchableOpacity>
-
-        </View>
+            
         </TouchableWithoutFeedback>
     )
 }
@@ -134,11 +175,11 @@ const styles = StyleSheet.create({
     },
     inputFieldDT: {
         backgroundColor: "#ffffff",
-        width: "37%",
+        width: "35%",
         borderRadius: 25,
         height: 55,
-        marginLeft: 10,
-        marginRight: 10,
+        marginRight: Dimensions.get("window").width * 0.05,
+        marginLeft: Dimensions.get("window").width * 0.05,
         marginBottom: 20,
         justifyContent: "center",
         alignItems: "center"
@@ -148,7 +189,7 @@ const styles = StyleSheet.create({
         width: "80%",
         borderRadius: 25,
         height: 100,
-        marginBottom:20,
+        marginBottom: 20,
         padding: 20
     },
     inputText: {
@@ -160,22 +201,42 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto",
         textAlignVertical: "top"
     },
-    rectangleLogin: {
-        height: 400,
+    rectangle: {
+        height: '70%',
         width: Dimensions.get("window").width,
         backgroundColor: "#f9f9f9",
-        borderRadius: 50,
-        top: '25%',
-        position: "absolute"
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
+        bottom: 0,
+        position: "absolute",
+        // justifyContent: "center",
+        alignItems: "center",
+        paddingTop: 30
     },
     button: {
         backgroundColor: '#ec2929',
         borderRadius: 10,
         width: '80%',
         height: 45,
-        marginBottom: 20,
+        // marginBottom: 20,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 20
-    }
+    },
+    header: {
+        justifyContent: 'center',
+        width: '80%',
+        height: 80,
+        marginBottom:30,
+        backgroundColor: 'white',
+        borderRadius: 15,
+        top: '10%',
+        position:"absolute"
+     },
+     title: {
+        textAlign: 'center',
+        fontSize: 25,
+        fontFamily: 'Roboto'
+     
+     }
 });

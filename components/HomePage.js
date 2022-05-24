@@ -7,7 +7,7 @@ export default function HomePage({navigation}) {
   
       <KeyboardAvoidingView behavior={'height'} enabled={false} style={styles.container}>
       
-        <View style={styles.rectangleLogin}></View>
+        <View style={styles.rectangle}></View>
   
         <Text style={{ fontSize: 32, color:'white',position:"absolute", top:'18%', fontFamily:'Roboto', fontWeight:'bold'}}>
           COMpanion
@@ -40,7 +40,7 @@ export default function HomePage({navigation}) {
       height:55,
       fontFamily:"Roboto"
    },
-   rectangleLogin: {
+   rectangle: {
     height: 400,
     width: Dimensions.get("window").width,
     backgroundColor: "#f9f9f9",
