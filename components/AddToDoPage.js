@@ -201,16 +201,18 @@ const styles = StyleSheet.create({
         textAlignVertical: "top"
     },
     rectangle: {
-        height: '70%',
+        height: '55%',
         width: Dimensions.get("window").width,
         backgroundColor: "#f9f9f9",
         borderTopLeftRadius: 50,
         borderTopRightRadius: 50,
+        borderRadius:50,
         bottom: 0,
         position: "absolute",
         // justifyContent: "center",
         alignItems: "center",
-        paddingTop: 30
+        paddingTop: 30,
+        marginBottom: 150
     },
     button: {
         backgroundColor: '#ec2929',
@@ -235,7 +237,8 @@ const styles = StyleSheet.create({
      title: {
         textAlign: 'center',
         fontSize: 25,
-        fontFamily: 'Roboto'
+        fontFamily: 'Roboto',
+      
      
      }
 });
