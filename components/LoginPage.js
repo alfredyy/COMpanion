@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput, Pressable, Dimensions, TouchableOpacity, KeyboardAvoidingView, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
 import Toast from 'react-native-toast-message';
 
@@ -35,54 +35,53 @@ export default function LoginPage({ navigation }) {
   }
 
   return (
+    <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-    <KeyboardAvoidingView behavior={'height'} enabled={false} style={styles.container}>
-
-      <View style={styles.rectangleLogin}></View>
-
-      <Text style={{ fontSize: 32, color: 'white', position: "absolute", top: '18%', fontFamily: 'Roboto', fontWeight: 'bold' }}>
+      <Text style={{ fontSize: 32, color: 'white', fontFamily: 'Roboto', fontWeight: 'bold', marginBottom: 30 }}>
         COMpanion
       </Text>
 
-      <View style={styles.inputField}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="email"
-          onChangeText={(newEmail) => setEmail(newEmail)}
-          autoCapitalize='none'
-        />
+      <View style={styles.rectangleLogin}>
+
+        <View style={styles.inputField}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="email"
+            onChangeText={(newEmail) => setEmail(newEmail)}
+            autoCapitalize='none'
+          />
+        </View>
+
+        <View style={styles.inputField}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="password"
+            secureTextEntry={true}
+            onChangeText={(newPassword) => setPassword(newPassword)}
+            autoCapitalize='none'
+          />
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
+          <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+            LOGIN
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={{ fontFamily: "Roboto" }}>No account? Create one here!</Text>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("CreateAccount")}
+        >
+          <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+            CREATE AN ACCOUNT
+          </Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.inputField}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="password"
-          secureTextEntry={true}
-          onChangeText={(newPassword) => setPassword(newPassword)}
-          autoCapitalize='none'
-        />
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
-        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
-          LOGIN
-        </Text>
-      </TouchableOpacity>
-
-      <Text style={{ fontFamily: "Roboto" }}>No account? Create one here!</Text>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate("CreateAccount")}
-      >
-        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
-          CREATE AN ACCOUNT
-        </Text>
-      </TouchableOpacity>
 
       <Toast />
-
-    </KeyboardAvoidingView>
+    </ScrollView>
 
   );
 }
@@ -91,9 +90,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ec2929',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: "Roboto"
+    paddingTop: StatusBar.currentHeight,
+    height: Dimensions.get('window').height,
   },
   inputField: {
     backgroundColor: "#ffffff",
@@ -106,15 +104,17 @@ const styles = StyleSheet.create({
   },
   inputText: {
     height: 55,
-    fontFamily: "Roboto"
+    fontFamily: "Roboto",
+    width: '100%'
   },
   rectangleLogin: {
     height: 400,
     width: Dimensions.get("window").width,
     backgroundColor: "#f9f9f9",
     borderRadius: 50,
-    top: '25%',
-    position: "absolute"
+    paddingTop: 30,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   button: {
     backgroundColor: '#ec2929',

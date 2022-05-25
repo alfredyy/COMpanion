@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard, StatusBar } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto';
-// import Toast from 'react-native-toast-message';
 import Toast from 'react-native-toast-message';
 
 
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ec2929',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: "Roboto"
+        paddingTop: StatusBar.currentHeight
     },
     inputField: {
         backgroundColor: "#ffffff",
