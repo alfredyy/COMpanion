@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto';
@@ -54,13 +55,13 @@ export default function AddToDoPage({ navigation }) {
                 type: 'error',
                 text1: 'Incomplete Field',
                 text2: 'Task Name cannot be empty!'
-              });
+            });
         } else if (datetime < new Date()) {
             Toast.show({
                 type: 'error',
                 text1: 'Time Travelling Detected',
                 text2: 'Ensure that event starts later than current time!'
-              });
+            });
         } else {
             try {
                 loading = true
@@ -79,13 +80,13 @@ export default function AddToDoPage({ navigation }) {
                     type: 'error',
                     text1: 'Error',
                     text2: error.message
-                  });
+                });
             } finally {
                 loading = false
                 Toast.show({
                     type: 'success',
                     text1: 'Task Added!',
-                  });
+                });
             }
         }
     }
@@ -95,10 +96,16 @@ export default function AddToDoPage({ navigation }) {
             Keyboard.dismiss();
         }}>
             <View style={styles.container}>
-
-                <View style={styles.header}>
-                    <Text style={styles.title}>Add Task</Text>
-                </View>
+                <Header
+                    statusBarProps={{ backgroundColor: '#ec2929' }}
+                    placement='left'
+                    leftComponent={{ icon: 'playlist-add', color: '#fff', size: 30 }}
+                    centerComponent={{ text: 'Add Task', style: { color: '#fff', fontWeight: 'bold', fontSize: 24 } }}
+                    containerStyle={{
+                        backgroundColor: '#ec2929',
+                        alignItems: 'baseline'
+                    }}
+                />
 
                 <View style={styles.rectangle}>
 
@@ -112,13 +119,15 @@ export default function AddToDoPage({ navigation }) {
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <TouchableOpacity style={styles.inputFieldDT} onPress={showDate}>
-                            <Text style={{ fontFamily: "Roboto" }}>
+                            <Icon name='date-range' type='material' color='gray' />
+                            <Text style={{ fontFamily: "Roboto", padding: 5 }}>
                                 {datetime.toLocaleDateString()}
                             </Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.inputFieldDT} onPress={showTime}>
-                            <Text style={{ fontFamily: "Roboto" }}>
+                            <Icon name='access-time' type='material' color='gray' />
+                            <Text style={{ fontFamily: "Roboto", padding: 5 }}>
                                 {timeFormatter()}
                             </Text>
                         </TouchableOpacity>
@@ -136,11 +145,15 @@ export default function AddToDoPage({ navigation }) {
                             style={styles.inputTextDesc}
                             placeholder='Notes'
                             multiline={true}
-                            numberOfLines={4}
-                            maxLength={1000}
+                            numberOfLines={9}
+                            maxLength={280}
                             onChangeText={(desc => setDesc(desc))}
                         />
+                        <Text style={{ color: 'black', fontFamily: "Roboto", opacity: 0.5, }}>
+                            {280 - desc.length} characters left
+                        </Text>
                     </View>
+
 
                     <TouchableOpacity style={styles.button} onPress={() => submitToDo()}>
                         <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
@@ -150,7 +163,7 @@ export default function AddToDoPage({ navigation }) {
                 </View>
                 <Toast />
             </View>
-            
+
         </TouchableWithoutFeedback>
     )
 }
@@ -158,10 +171,7 @@ export default function AddToDoPage({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ec2929',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: StatusBar.currentHeight
+        backgroundColor: '#f9f9f9',
     },
     inputField: {
         backgroundColor: "#ffffff",
@@ -181,45 +191,37 @@ const styles = StyleSheet.create({
         marginLeft: Dimensions.get("window").width * 0.05,
         marginBottom: 20,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        flexDirection: 'row'
     },
     inputFieldDesc: {
         backgroundColor: "#ffffff",
         width: "80%",
         borderRadius: 25,
-        height: 100,
+        height: 180,
         marginBottom: 20,
-        padding: 20
+        padding: 20,
     },
     inputText: {
         height: 55,
         fontFamily: "Roboto"
     },
     inputTextDesc: {
-        // height: 55,
+        height: '90%',
         fontFamily: "Roboto",
-        textAlignVertical: "top"
+        textAlignVertical: "top",
     },
     rectangle: {
-        height: '80%',
         width: Dimensions.get("window").width,
-        backgroundColor: "#f9f9f9",
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
-        borderRadius:50,
-        bottom: 0,
-        position: "absolute",
-        // justifyContent: "center",
+        justifyContent: "center",
         alignItems: "center",
         paddingTop: 30,
-        //marginBottom: 150
     },
     button: {
         backgroundColor: '#ec2929',
         borderRadius: 10,
         width: '80%',
         height: 45,
-        // marginBottom: 20,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 20
@@ -228,17 +230,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '80%',
         height: 80,
-        marginBottom:30,
+        marginBottom: 30,
         backgroundColor: 'white',
         borderRadius: 15,
         top: '10%',
-        position:"absolute"
-     },
-     title: {
+        position: "absolute"
+    },
+    title: {
         textAlign: 'center',
         fontSize: 25,
         fontFamily: 'Roboto',
-      
-     
-     }
+
+
+    }
 });

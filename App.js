@@ -1,5 +1,5 @@
 
-import React, {useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { supabaseClient } from './supabaseClient';
@@ -36,33 +36,40 @@ function HomeTabs() {
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         backgroundColor: '#ec2929'
+
       }
     }}>
-      <Tab.Screen name="Home" component={HomePage} 
-      options={{
-        tabBarIcon: ({focused}) => (
-          <View>
-            <AntDesign name="home" size={24} color="white" />
-          </View>
-        )
-      }}
+      <Tab.Screen name="Home" component={HomePage}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View>
+
+              <AntDesign name="home" size={24} color="white" />
+
+            </View>
+          )
+        }}
       />
-      <Tab.Screen name="TodoList" component={TodoList} 
-      options={{
-        tabBarIcon: ({focused}) => (
+      <Tab.Screen name="TodoList" component={TodoList}
+        options={{
+          tabBarIcon: ({ focused }) => (
             <View>
+
               <Feather name="list" size={24} color="white" />
+
             </View>
-        )
-      }}/>
-      <Tab.Screen name="AddToDo" component={AddToDoPage} 
-      options={{
-        tabBarIcon: ({focused}) => (
+          )
+        }} />
+      <Tab.Screen name="AddToDo" component={AddToDoPage}
+        options={{
+          tabBarIcon: ({ focused }) => (
             <View>
+
               <MaterialIcons name="playlist-add" size={24} color="white" />
+
             </View>
-        )
-      }}/>
+          )
+        }} />
     </Tab.Navigator>
   );
 }
@@ -78,22 +85,22 @@ export default function App() {
     })
   }, [])
 
-  return(
+  return (
     <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false
-          }}>
-            {session == null ? (
-            <>
-              <Stack.Screen name="Login" component={LoginPage} />
-              <Stack.Screen name="CreateAccount" component={CreateAccountPage} />
-            </>
-            ) : (
-              <Stack.Screen name="HomeTabs" component={HomeTabs} />
-            )}
-        </Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}>
+        {session == null ? (
+          <>
+            <Stack.Screen name="Login" component={LoginPage} />
+            <Stack.Screen name="CreateAccount" component={CreateAccountPage} />
+          </>
+        ) : (
+          <Stack.Screen name="HomeTabs" component={HomeTabs} />
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
-  
+
 }
