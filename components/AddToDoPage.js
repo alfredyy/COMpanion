@@ -225,22 +225,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 20
-    },
-    header: {
-        justifyContent: 'center',
-        width: '80%',
-        height: 80,
-        marginBottom: 30,
-        backgroundColor: 'white',
-        borderRadius: 15,
-        top: '10%',
-        position: "absolute"
-    },
-    title: {
-        textAlign: 'center',
-        fontSize: 25,
-        fontFamily: 'Roboto',
-
-
     }
 });

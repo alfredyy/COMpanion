@@ -12,6 +12,7 @@ import CreateAccountPage from './components/CreateAccountPage';
 import HomePage from './components/HomePage';
 import TodoList from './components/TodoListPage';
 import AddToDoPage from './components/AddToDoPage';
+import ShopPage from './components/ShopPage';
 
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -70,6 +71,17 @@ function HomeTabs() {
             </View>
           )
         }} />
+        <Tab.Screen name="Shop" component={ShopPage}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View>
+
+              <MaterialIcons name="storefront" size={24} color="white" />
+
+            </View>
+          )
+        }}
+      />
     </Tab.Navigator>
   );
 }
