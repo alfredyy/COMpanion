@@ -1,8 +1,11 @@
-import {View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import {Button, Input, ListItem, CheckBox, Text} from 'react-native-elements';
+import {Dimensions, View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {Button, Input, ListItem, CheckBox, Text, Header} from 'react-native-elements';
 import React, {useEffect, useRef, useState} from 'react';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
+
+import { Feather } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
@@ -58,51 +61,75 @@ export default function TodoList() {
       Keyboard.dismiss();
     }}>
     <View style={styles.container}>
+      <Header
+        statusBarProps={{ backgroundColor: '#ec2929' }}
+        placement='left'
+        leftComponent={{ icon: 'list', color: '#fff', size: 30 }}
+        centerComponent={{ text: 'To Do List', style: { color: '#fff', fontWeight: 'bold', fontSize: 24 } }}
+        containerStyle={{
+          backgroundColor: '#ec2929',
+         alignItems: 'baseline'
+        }}
+      />
+    <View style={styles.rectangle}>
     <FlatList
           scrollEnabled={true}
           data={todos}
           keyExtractor={item => `${item.id}`}
           renderItem={({item: todo}) => (
-            <ListItem bottomDivider>
-              <ListItem.Content>
+            
+              
                 <View style={[styles.dFlex]}>
                   <CheckBox
                     checked={todo.completed}
                     onPress={() => toggleCompleted(todo.id, todo.completed)}
                   />
-                  <Text h4 style={[styles.mtAuto]}>
+                  <Text style={[styles.mtAuto]}>
                     {todo.item_name}
                   </Text>
-                  <Button title="Delete" onPress={() => deleteTodo(todo.id)} />
+                  <AntDesign name="delete" size={24} color="black" onPress={() => deleteTodo(todo.id)} />
                 </View>
-              </ListItem.Content>
-            </ListItem>
+            
+            
           )}
         />
+
+        </View>
+      
     </View>
     </TouchableWithoutFeedback>
   );
-
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    flex: 1,
+    backgroundColor: '#f9f9f9',
   },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
-  },
-  mt20: {
-    marginTop: 20,
+  rectangle: {
+    width: Dimensions.get("window").width,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 30,
+},
+  dFlex: {
+    flexDirection: 'row',
+    backgroundColor: "#ffffff",
+    width: 350,
+    borderRadius: 30,
+    borderColor: 'black',
+    height: 60,
+    marginBottom: 20,
+    justifyContent: "flex-start",
+    alignItems: 'center'
   },
   mtAuto: {
-    margin: 'auto',
-  },
-  dFlex: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+   width: 230,
+   paddingRight: 15
+  }
 });
+
+
+
+
+
