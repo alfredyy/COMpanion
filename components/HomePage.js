@@ -1,61 +1,72 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput, Pressable, Dimensions, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Header, Icon, Card } from 'react-native-elements';
 
-export default function HomePage({navigation}) {
-  
-    return (
-  
-      <KeyboardAvoidingView behavior={'height'} enabled={false} style={styles.container}>
-      
-        <View style={styles.rectangle}></View>
-  
-        <Text style={{ fontSize: 32, color:'white',position:"absolute", top:'18%', fontFamily:'Roboto', fontWeight:'bold'}}>
-          COMpanion
-        </Text>
-  
-        <Text style={{fontFamily:"Roboto"}}>Hello! What would you like to do today?</Text>
-  
-      </KeyboardAvoidingView>
-    );
-  }
+export default function HomePage({ navigation }) {
+  const daynight = (new Date().getHours < 12 ? 'Good Morning!' : 'Hello!');
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#ec2929',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily:"Roboto"
-    },
-    inputField: {
-      backgroundColor: "#ffffff",
-      width:"80%",
-      borderRadius:25,
-      height:55,
-      marginBottom:20,
-      justifyContent:"center",
-      padding:20
-   },
-   inputText: {
-      height:55,
-      fontFamily:"Roboto"
-   },
-   rectangle: {
-    height: 400,
-    width: Dimensions.get("window").width,
-    backgroundColor: "#f9f9f9",
+  return (
+
+    <TouchableWithoutFeedback onPress={() => {
+      Keyboard.dismiss();
+    }}>
+      <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
+        <Header
+          statusBarProps={{ backgroundColor: '#ec2929' }}
+          placement='left'
+          leftComponent={{ icon: 'home', color: '#fff', size: 30, type: 'antdesign' }}
+          centerComponent={{ text: 'Home', style: { color: '#fff', fontWeight: 'bold', fontSize: 24 } }}
+          containerStyle={{
+            backgroundColor: '#ec2929',
+            alignItems: 'baseline'
+          }}
+        />
+        <Card containerStyle={ styles.homeCardContainer }>
+          <View
+            style={{
+              position: "relative",
+              alignItems: "center",
+              backgroundColor: "#ec2929"
+            }}
+          >
+            <Icon name='smiley' type='octicon' color='#fff' size={50} />
+            <Text style={{ color: "white", fontWeight:'bold', fontSize:24, fontFamily:'Roboto' }}>
+              {daynight}
+            </Text>
+            <Text style={{ color: "white" }}>
+              What would you like to do today?
+            </Text>
+          </View>
+        </Card>
+      </ScrollView>
+    </TouchableWithoutFeedback>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f9f9f9',
+  },
+  button: {
+    backgroundColor: '#ec2929',
+    borderRadius: 10,
+    width: '80%',
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20
+  },
+  homeCardContainer: {
+    padding: 20,
+    backgroundColor: '#ec2929',
     borderRadius: 50,
-    top:'25%',
-    position: "absolute"
-   },
-   button: {
-     backgroundColor: '#ec2929',
-     borderRadius: 10,
-     width:'80%',
-     height: 45,
-     marginBottom: 20,
-     alignItems:'center',
-     justifyContent:'center',
-     marginTop:20
-   }
-  });
+    width: '80%',
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  elevation: {
+    elevation: 20,
+    shadowColor: '#52006A',
+  },
+});

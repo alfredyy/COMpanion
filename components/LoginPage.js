@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
+import { Icon } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
 
 export default function LoginPage({ navigation }) {
@@ -37,7 +38,9 @@ export default function LoginPage({ navigation }) {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-      <Text style={{ fontSize: 32, color: 'white', fontFamily: 'Roboto', fontWeight: 'bold', marginBottom: 30 }}>
+      <Icon name='smiley' type='octicon' color='#fff' size={50} />
+
+      <Text style={{ fontSize: 32, color: 'white', fontFamily: 'sans-serif', fontWeight: 'bold', marginTop: 10, marginBottom: 20 }}>
         COMpanion
       </Text>
 

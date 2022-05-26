@@ -76,7 +76,7 @@ function HomeTabs() {
           tabBarIcon: ({ focused }) => (
             <View>
 
-              <MaterialIcons name="storefront" size={24} color="white" />
+              <MaterialIcons name="store" size={24} color="white" />
 
             </View>
           )

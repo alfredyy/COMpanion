@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
 import { BarPasswordStrengthDisplay } from 'react-native-password-strength-meter'
+import { Icon } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
 
 export default function CreateAccountPage({ navigation }) {
@@ -62,7 +63,9 @@ export default function CreateAccountPage({ navigation }) {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-      <Text style={{ fontSize: 24, color: 'white', fontFamily: 'Roboto', fontWeight: 'bold', marginBottom: 20 }}>
+      <Icon name='smiley' type='octicon' color='#fff' size={50} />
+
+      <Text style={{ fontSize: 24, color: 'white', fontFamily: 'Roboto', fontWeight: 'bold', margin: 10 }}>
         welcome to the family!
       </Text>
 
