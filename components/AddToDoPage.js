@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         textAlignVertical: "top"
     },
     rectangle: {
-        height: '55%',
+        height: '80%',
         width: Dimensions.get("window").width,
         backgroundColor: "#f9f9f9",
         borderTopLeftRadius: 50,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
         // justifyContent: "center",
         alignItems: "center",
         paddingTop: 30,
-        marginBottom: 150
+        //marginBottom: 150
     },
     button: {
         backgroundColor: '#ec2929',

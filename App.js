@@ -35,13 +35,14 @@ function HomeTabs() {
         position: 'absolute',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+        backgroundColor: '#ec2929'
       }
     }}>
       <Tab.Screen name="Home" component={HomePage} 
       options={{
         tabBarIcon: ({focused}) => (
           <View>
-            <AntDesign name="home" size={24} color="black" />
+            <AntDesign name="home" size={24} color="white" />
           </View>
         )
       }}
@@ -50,7 +51,7 @@ function HomeTabs() {
       options={{
         tabBarIcon: ({focused}) => (
             <View>
-              <Feather name="list" size={24} color="black" />
+              <Feather name="list" size={24} color="white" />
             </View>
         )
       }}/>
@@ -58,7 +59,7 @@ function HomeTabs() {
       options={{
         tabBarIcon: ({focused}) => (
             <View>
-              <MaterialIcons name="playlist-add" size={24} color="black" />
+              <MaterialIcons name="playlist-add" size={24} color="white" />
             </View>
         )
       }}/>
