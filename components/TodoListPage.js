@@ -3,6 +3,7 @@ import {Button, Input, ListItem, CheckBox, Text, Header} from 'react-native-elem
 import React, {useEffect, useRef, useState} from 'react';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
+import Toast  from 'react-native-toast-message';
 
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -59,12 +60,17 @@ export default function TodoList() {
     const handlePress = async id => {
     const {data, error} = await supabaseClient
       .from('todos')
-      .select('description')
+      .select('description','datetime')
       .eq('id', id)
     if (error) {
       console.log(error);
     } else {
-      ToastAndroid.showWithGravity(`${data[0].description}`, ToastAndroid.LONG, ToastAndroid.TOP);
+      //ToastAndroid.showWithGravity(`${data[0].description}`, ToastAndroid.LONG, ToastAndroid.TOP);
+      const descr = data[0].description;
+      Toast.show({
+        type: 'info',
+        text1: `${data[0].description}`,
+      });
   }
 };
 
@@ -111,8 +117,9 @@ export default function TodoList() {
         />
 
         </View>
-      
+        <Toast />
     </View>
+    
     </TouchableWithoutFeedback>
   );
 }
