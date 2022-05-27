@@ -1,9 +1,35 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, Dimensions, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Header, Icon, Card } from 'react-native-elements';
+import { supabaseClient } from '../supabaseClient';
+import 'react-native-url-polyfill/auto'
 
 export default function HomePage({ navigation }) {
-  const daynight = (new Date().getHours < 12 ? 'Good Morning!' : 'Hello!');
+  const daynight = (new Date().getHours() < 12 ? 'Good Morning!' : 'Hello!');
+  const componentMounted = useRef(true);
+  const [selectedCompanion, setSelectedCompanion] = useState('')
+  const [companionImage, setCompanionImage] = useState(require('../assets/white.png')) //PLACEHOLDER FOR NOW
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('selected_companion')
+      if (error) {
+        console.log('error', error);
+      } else {
+        console.log('Selected: ', data);
+        setSelectedCompanion(data[0].selected_companion);
+        // setCompanionImage(require('../assets/mack/mack3.png')) //FIGURE OUT HOW TO GET IMAGE FROM ASSETS 
+      }
+    };
+    if (componentMounted.current) {
+      fetchData();
+    }
+    return () => {
+      componentMounted.current = false;
+    };
+  }, []);
 
   return (
 
@@ -21,7 +47,7 @@ export default function HomePage({ navigation }) {
             alignItems: 'baseline'
           }}
         />
-        <Card containerStyle={ styles.homeCardContainer }>
+        <Card containerStyle={styles.homeCardContainer}>
           <View
             style={{
               position: "relative",
@@ -30,7 +56,7 @@ export default function HomePage({ navigation }) {
             }}
           >
             <Icon name='smiley' type='octicon' color='#fff' size={50} />
-            <Text style={{ color: "white", fontWeight:'bold', fontSize:24, fontFamily:'Roboto' }}>
+            <Text style={{ color: "white", fontWeight: 'bold', fontSize: 24, fontFamily: 'Roboto' }}>
               {daynight}
             </Text>
             <Text style={{ color: "white" }}>
@@ -38,6 +64,7 @@ export default function HomePage({ navigation }) {
             </Text>
           </View>
         </Card>
+        <Image source={companionImage} />
       </ScrollView>
     </TouchableWithoutFeedback>
   );
@@ -62,8 +89,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ec2929',
     borderRadius: 50,
     width: '80%',
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   elevation: {
     elevation: 20,

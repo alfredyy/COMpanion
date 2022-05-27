@@ -1,40 +1,69 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, ScrollView, Dimensions } from 'react-native';
-import {Button, Input, ListItem, CheckBox, Text, Header, Icon} from 'react-native-elements';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, ScrollView, Image } from 'react-native';
+import { Button, Text, Header, Icon, Card } from 'react-native-elements';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
 import Toast from 'react-native-toast-message';
 
 export default function ShopPage({ navigation }) {
     const componentMounted = useRef(true);
+    const [currency, setCurrency] = useState(0);
+    const [ownedCompanions, setOwnedCompanions] = useState([]);
 
-    // useEffect(() => {
-    //     const fetchTodos = async () => {
-    //       const {data, error} = await supabaseClient
-    //         .from('todos')
-    //         .select('*')
-    //         .order('id', {ascending: false});
-    //       if (error) {
-    //         console.log('error', error);
-    //       } else {
-    //         console.log('Todos: ', data);
-    //         setTodos(data);
-    //       }
-    //     };
-    //     if (componentMounted.current) {
-    //       fetchTodos();
-    //     }
-    
-    //     return () => {
-    //       componentMounted.current = false;
-    //     };
+    useEffect(() => {
+        const fetchData = async () => {
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('currency, owned_companions')
+            if (error) {
+                console.log('error', error);
+            } else {
+                console.log('Currency: ', data[0].currency);
+                console.log('Owned Companions: ', data[0].owned_companions)
+                setCurrency(data[0].currency);
+                setOwnedCompanions(data[0].owned_companions)
+            }
+        };
+        if (componentMounted.current) {
+            fetchData();
+        }
 
+        return () => {
+            componentMounted.current = false;
+        };
+    });
+
+    //ADOPT COMPANION NOT TESTED YET
+    const adoptCompanion = async (name) => {
+        if (currency < 160) {
+            Toast.show({
+                type: 'error',
+                text1: 'Insufficient Coins'
+            });
+        } else if (ownedCompanions.includes(name)) {
+            Toast.show({
+                type: 'info',
+                text1: 'This companion has been adopted already'
+            });
+        } else {
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .update({ owned_companions: ownedCompanions.push(name), currency: currency - 160 })
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(data)
+                setCurrency(data[0].currency);
+                setOwnedCompanions(data[0].owned_companions)
+            }
+        }
+    };
 
     return (
         <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
         }}>
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
                 <Header
                     statusBarProps={{ backgroundColor: '#ec2929' }}
                     placement='left'
@@ -45,6 +74,34 @@ export default function ShopPage({ navigation }) {
                         alignItems: 'baseline'
                     }}
                 />
+                <Card containerStyle={styles.currencyCardContainer}>
+                    <View
+                        style={{
+                            position: "relative",
+                            alignItems: "center",
+                            backgroundColor: "#fff",
+                            flexDirection: 'row'
+                        }}
+                    >
+                        <Icon name='attach-money' type='material' color='black' size={30} />
+                        <Text style={{ color: "black", fontWeight: 'bold', fontSize: 24, fontFamily: 'Roboto' }}>
+                            {currency}
+                        </Text>
+                    </View>
+                </Card>
+                <Card containerStyle={styles.currencyCardContainer}>
+                    <View
+                        style={{
+                            position: "relative",
+                            alignItems: "center",
+                            backgroundColor: "#fff",
+                            flexDirection: 'row'
+                        }}
+                    ></View>
+                    <Image style={ownedCompanions.includes('mack') ? styles.unlocked : styles.locked} source={require('../assets/mack/mack3.png')} />
+                    <Image style={ownedCompanions.includes('pickles') ? styles.unlocked : styles.locked} source={require('../assets/pickles/pickles3.png')} />
+                    <Image style={ownedCompanions.includes('pumpkin') ? styles.unlocked : styles.locked} source={require('../assets/pumpkin/pumpkin3.png')} />
+                </Card>
             </ScrollView>
         </TouchableWithoutFeedback>
     );
@@ -55,25 +112,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f9f9f9',
     },
-    inputField: {
-        backgroundColor: "#ffffff",
-        width: "80%",
-        borderRadius: 25,
-        height: 55,
-        marginBottom: 20,
-        justifyContent: "center",
-        padding: 20
-    },
-    inputText: {
-        height: 55,
-        fontFamily: "Roboto"
-    },
-    rectangle: {
-        width: Dimensions.get("window").width,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingTop: 30,
-    },
     button: {
         backgroundColor: '#ec2929',
         borderRadius: 10,
@@ -82,5 +120,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 20
+    },
+    currencyCardContainer: {
+        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 50,
+        width: '80%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20
+    },
+    locked: {
+        opacity: 0.5,
+        tintColor: 'grey',
+        margin: 10
+    },
+    unlocked: {
+        margin: 10
     }
 });
