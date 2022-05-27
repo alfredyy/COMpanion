@@ -1,4 +1,4 @@
-import {Dimensions, View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {Dimensions, View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, TouchableOpacity, ToastAndroid } from 'react-native';
 import {Button, Input, ListItem, CheckBox, Text, Header} from 'react-native-elements';
 import React, {useEffect, useRef, useState} from 'react';
 import { supabaseClient } from '../supabaseClient';
@@ -6,6 +6,7 @@ import 'react-native-url-polyfill/auto'
 
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
@@ -55,6 +56,17 @@ export default function TodoList() {
     }
   };
 
+    const handlePress = async id => {
+    const {data, error} = await supabaseClient
+      .from('todos')
+      .select('description')
+      .eq('id', id)
+    if (error) {
+      console.log(error);
+    } else {
+      ToastAndroid.showWithGravity(`${data[0].description}`, ToastAndroid.LONG, ToastAndroid.TOP);
+  }
+};
 
   return (
     <TouchableWithoutFeedback onPress={() => {
@@ -84,10 +96,14 @@ export default function TodoList() {
                     checked={todo.completed}
                     onPress={() => toggleCompleted(todo.id, todo.completed)}
                   />
-                  <Text style={[styles.mtAuto]}>
-                    {todo.item_name}
-                  </Text>
-                  <AntDesign name="delete" size={24} color="black" onPress={() => deleteTodo(todo.id)} />
+                  
+                  <TouchableOpacity onLongPress={() => handlePress(todo.id)}>
+                    <Text style={[styles.mtAuto]}>
+                      {todo.item_name}
+                     </Text>
+                     </TouchableOpacity>
+                      <AntDesign name="delete" size={24} color="black" onPress={() => deleteTodo(todo.id)} />
+                 
                 </View>
             
             
@@ -128,8 +144,3 @@ const styles = StyleSheet.create({
    paddingRight: 15
   }
 });
-
-
-
-
-
