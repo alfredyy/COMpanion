@@ -67,7 +67,7 @@ export default function ShopPage({ navigation }) {
                 <Header
                     statusBarProps={{ backgroundColor: '#ec2929' }}
                     placement='left'
-                    leftComponent={{ icon: 'store', color: '#fff', size: 30 }}
+                    leftComponent={{ icon: 'storefront', color: '#fff', size: 30 }}
                     centerComponent={{ text: 'Shop', style: { color: '#fff', fontWeight: 'bold', fontSize: 24 } }}
                     containerStyle={{
                         backgroundColor: '#ec2929',

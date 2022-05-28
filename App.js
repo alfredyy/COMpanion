@@ -6,6 +6,7 @@ import { supabaseClient } from './supabaseClient';
 import { Session } from '@supabase/supabase-js'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 import LoginPage from './components/LoginPage';
 import CreateAccountPage from './components/CreateAccountPage';
@@ -13,6 +14,7 @@ import HomePage from './components/HomePage';
 import TodoList from './components/TodoListPage';
 import AddToDoPage from './components/AddToDoPage';
 import ShopPage from './components/ShopPage';
+import ProfilePage from './components/ProfilePage';
 
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -37,16 +39,13 @@ function HomeTabs() {
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         backgroundColor: '#ec2929'
-
       }
     }}>
       <Tab.Screen name="Home" component={HomePage}
         options={{
           tabBarIcon: ({ focused }) => (
             <View>
-
-              <AntDesign name="home" size={24} color="white" />
-
+              <Icon name='home' type='antdesign' color='#fff' size={24} />
             </View>
           )
         }}
@@ -55,9 +54,7 @@ function HomeTabs() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View>
-
-              <Feather name="list" size={24} color="white" />
-
+              <Icon name='list' type='feather' color='#fff' size={24} />
             </View>
           )
         }} />
@@ -65,23 +62,26 @@ function HomeTabs() {
         options={{
           tabBarIcon: ({ focused }) => (
             <View>
-
-              <MaterialIcons name="playlist-add" size={24} color="white" />
-
+              <Icon name='add-circle-outline' type='material' color='#fff' size={45} />
             </View>
           )
         }} />
-        <Tab.Screen name="Shop" component={ShopPage}
+      <Tab.Screen name="Shop" component={ShopPage}
         options={{
           tabBarIcon: ({ focused }) => (
             <View>
-
-              <MaterialIcons name="store" size={24} color="white" />
-
+              <Icon name='storefront' type='material' color='#fff' size={24} />
             </View>
           )
-        }}
-      />
+        }} />
+        <Tab.Screen name="Profile" component={ProfilePage}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View>
+              <Icon name='person' type='octicon' color='#fff' size={24} />
+            </View>
+          )
+        }} />
     </Tab.Navigator>
   );
 }
