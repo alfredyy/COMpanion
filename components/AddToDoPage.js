@@ -49,6 +49,13 @@ export default function AddToDoPage({ navigation }) {
         return hours + ':' + minutes + ampm
     }
 
+    const dateFormatter = () => {
+        let day = datetime.getDate()
+        let month = datetime.getMonth()
+        let year = datetime.getFullYear()
+        return day + '/' + month + '/' + year
+      }
+
     const submitToDo = async () => {
         if (item_name.length == 0) {
             Toast.show({
@@ -121,7 +128,7 @@ export default function AddToDoPage({ navigation }) {
                         <TouchableOpacity style={styles.inputFieldDT} onPress={showDate}>
                             <Icon name='date-range' type='material' color='gray' />
                             <Text style={{ fontFamily: "Roboto", padding: 5 }}>
-                                {datetime.toLocaleDateString()}
+                                {dateFormatter()}
                             </Text>
                         </TouchableOpacity>
 

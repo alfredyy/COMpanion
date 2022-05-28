@@ -1,24 +1,27 @@
-import {Dimensions, View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, TouchableOpacity, ToastAndroid } from 'react-native';
-import {Button, Input, ListItem, CheckBox, Text, Header} from 'react-native-elements';
-import React, {useEffect, useRef, useState} from 'react';
+import { Dimensions, View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { Button, Input, ListItem, CheckBox, Text, Header, Icon } from 'react-native-elements';
+import React, { useEffect, useRef, useState } from 'react';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
-import Toast  from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 
-import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
   const componentMounted = useRef(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [name, setName] = useState('')
+  const [desc, setDesc] = useState('');
+  const [datetime, setDateTime] = useState(new Date())
 
   useEffect(() => {
     const fetchTodos = async () => {
-      const {data, error} = await supabaseClient
+      const { data, error } = await supabaseClient
         .from('todos')
         .select('*')
-        .order('id', {ascending: false});
+        .order('datetime', { ascending: true });
       if (error) {
         console.log('error', error);
       } else {
@@ -36,9 +39,9 @@ export default function TodoList() {
   }, []);
 
   const toggleCompleted = async (id, completed) => {
-    const {data, error} = await supabaseClient
+    const { data, error } = await supabaseClient
       .from('todos')
-      .update({completed: !completed})
+      .update({ completed: !completed })
       .eq('id', id)
       .single();
     if (error) {
@@ -49,7 +52,7 @@ export default function TodoList() {
   };
 
   const deleteTodo = async id => {
-    const {error} = await supabaseClient.from('todos').delete().eq('id', id);
+    const { error } = await supabaseClient.from('todos').delete().eq('id', id);
     if (error) {
       console.log('error', error);
     } else {
@@ -57,69 +60,136 @@ export default function TodoList() {
     }
   };
 
-    const handlePress = async id => {
-    const {data, error} = await supabaseClient
-      .from('todos')
-      .select('description','datetime')
-      .eq('id', id)
-    if (error) {
-      console.log(error);
-    } else {
-      //ToastAndroid.showWithGravity(`${data[0].description}`, ToastAndroid.LONG, ToastAndroid.TOP);
-      const descr = data[0].description;
-      Toast.show({
-        type: 'info',
-        text1: `${data[0].description}`,
-      });
+  const handlePress = async (todo) => {
+    setName(todo.item_name)
+    setDesc(todo.description)
+    setDateTime(new Date(todo.datetime))
+    setModalVisible(true)
+  };
+
+  const timeFormatter = () => {
+    let hours = datetime.getHours()
+    let ampm = "am"
+    if (hours >= 12) {
+      ampm = "pm"
+      if (hours > 12) {
+        hours -= 12
+      }
+    }
+    let minutes = datetime.getMinutes()
+    if (minutes < 10) {
+      minutes = '0' + minutes.toString()
+    }
+    return hours + ':' + minutes + ampm
   }
-};
+
+  const dateFormatter = () => {
+    let day = datetime.getDate()
+    let month = datetime.getMonth()
+    let year = datetime.getFullYear()
+    return day + '/' + month + '/' + year
+  }
 
   return (
     <TouchableWithoutFeedback onPress={() => {
       Keyboard.dismiss();
     }}>
-    <View style={styles.container}>
-      <Header
-        statusBarProps={{ backgroundColor: '#ec2929' }}
-        placement='left'
-        leftComponent={{ icon: 'list', color: '#fff', size: 30 }}
-        centerComponent={{ text: 'To Do List', style: { color: '#fff', fontWeight: 'bold', fontSize: 24 } }}
-        containerStyle={{
-          backgroundColor: '#ec2929',
-         alignItems: 'baseline'
-        }}
-      />
-    <View style={styles.rectangle}>
-    <FlatList
-          scrollEnabled={true}
-          data={todos}
-          keyExtractor={item => `${item.id}`}
-          renderItem={({item: todo}) => (
-            
-              
-                <View style={[styles.dFlex]}>
-                  <CheckBox
-                    checked={todo.completed}
-                    onPress={() => toggleCompleted(todo.id, todo.completed)}
-                  />
-                  
-                  <TouchableOpacity onLongPress={() => handlePress(todo.id)}>
-                    <Text style={[styles.mtAuto]}>
-                      {todo.item_name}
-                     </Text>
-                     </TouchableOpacity>
-                      <AntDesign name="delete" size={24} color="black" onPress={() => deleteTodo(todo.id)} />
-                 
-                </View>
-            
-            
-          )}
-        />
+      <View style={styles.container}>
 
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.modalView}>
+
+            <View style={styles.details}>
+              <Icon name='info' type='feather' color='#fff' />
+              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft:20 }}>
+                Task Details
+              </Text>
+            </View>
+
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+              <View style={styles.descBox}>
+                <Text>{name}</Text>
+              </View>
+
+              <View style={{ flexDirection: 'row' }}>
+                <View style={styles.DTBox}>
+                  <Icon name='date-range' type='material' color='gray' />
+                  <Text style={{ fontFamily: "Roboto", padding: 5 }}>
+                    {dateFormatter()}
+                  </Text>
+                </View>
+
+                <View style={styles.DTBox}>
+                  <Icon name='access-time' type='material' color='gray' />
+                  <Text style={{ fontFamily: "Roboto", padding: 5 }}>
+                    {timeFormatter()}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.descBox}>
+                <Text>{desc}</Text>
+              </View>
+
+              <Pressable
+                style={[styles.button]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                  HIDE
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        <Header
+          statusBarProps={{ backgroundColor: '#ec2929' }}
+          placement='left'
+          leftComponent={{ icon: 'list', color: '#fff', size: 30 }}
+          centerComponent={{ text: 'To Do List', style: { color: '#fff', fontWeight: 'bold', fontSize: 24 } }}
+          containerStyle={{
+            backgroundColor: '#ec2929',
+            alignItems: 'baseline'
+          }}
+        />
+        <View style={styles.rectangle}>
+          <FlatList
+            scrollEnabled={true}
+            data={todos}
+            keyExtractor={item => `${item.id}`}
+            renderItem={({ item: todo }) => (
+
+
+              <View style={[styles.dFlex]}>
+                <CheckBox
+                  checked={todo.completed}
+                  onPress={() => toggleCompleted(todo.id, todo.completed)}
+                />
+
+                <TouchableOpacity onLongPress={() => handlePress(todo)}>
+                  <Text style={[styles.mtAuto]}>
+                    {todo.item_name}
+                  </Text>
+                </TouchableOpacity>
+
+                <AntDesign name="delete" size={24} color="black" onPress={() => deleteTodo(todo.id)} />
+
+              </View>
+            )}
+          />
         </View>
         <Toast />
-    </View>
-    
+      </View>
+
     </TouchableWithoutFeedback>
   );
 }
@@ -130,11 +200,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   rectangle: {
-    width: Dimensions.get("window").width,
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 30,
-},
+  },
   dFlex: {
     flexDirection: 'row',
     backgroundColor: "#ffffff",
@@ -144,10 +213,66 @@ const styles = StyleSheet.create({
     height: 60,
     marginBottom: 20,
     justifyContent: "flex-start",
-    alignItems: 'center'
+    alignItems: 'center',
   },
   mtAuto: {
-   width: 230,
-   paddingRight: 15
+    width: 230,
+    paddingRight: 15
+  },
+  modalView: {
+    margin: 20,
+    marginTop: "25%",
+    backgroundColor: "#f9f9f9",
+    borderRadius: 20,
+    // paddingTop: 35,
+    paddingBottom: 35,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    backgroundColor: '#ec2929',
+    borderRadius: 10,
+    width: '80%',
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20
+  },
+  DTBox: {
+    backgroundColor: "#fff",
+    width: "35%",
+    borderRadius: 25,
+    height: 55,
+    marginRight: Dimensions.get("window").width * 0.05,
+    marginLeft: Dimensions.get("window").width * 0.05,
+    marginBottom: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: 'row'
+  },
+  descBox: {
+    backgroundColor: "#fff",
+    width: "80%",
+    borderRadius: 25,
+    marginBottom: 20,
+    padding: 20,
+  },
+  details: {
+    backgroundColor: "#ec2929",
+    flexDirection: 'row',
+    justifyContent: 'flex-start', 
+    alignItems:'baseline', 
+    paddingLeft: 40, 
+    paddingBottom: 20,
+    paddingTop:25,
+    borderTopLeftRadius:20,
+    borderTopRightRadius: 20,
+    marginBottom: 20
   }
 });
