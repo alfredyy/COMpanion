@@ -1,4 +1,4 @@
-import { Dimensions, View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { TextInput, Dimensions, View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { Button, Input, ListItem, CheckBox, Text, Header, Icon } from 'react-native-elements';
 import React, { useEffect, useRef, useState } from 'react';
 import { supabaseClient } from '../supabaseClient';
@@ -15,6 +15,7 @@ export default function TodoList() {
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('');
   const [datetime, setDateTime] = useState(new Date())
+  let loading = false
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -90,6 +91,36 @@ export default function TodoList() {
     return day + '/' + month + '/' + year
   }
 
+  const handleUpdate = async () => {
+        try {
+            loading = true
+            //const user = supabaseClient.auth.user()
+            const { error } = await supabase
+                .from("todos")
+                .update({
+                  item_name: name,
+                  desc: desc,
+                }
+                .match({id: id})
+            )
+            if (error) throw error
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: error.message
+            });
+        } finally {
+            loading = false
+            Toast.show({
+                type: 'success',
+                text1: 'Task Updated!',
+            });
+        }
+    
+}
+
+
   return (
     <TouchableWithoutFeedback onPress={() => {
       Keyboard.dismiss();
@@ -104,6 +135,9 @@ export default function TodoList() {
             setModalVisible(!modalVisible);
           }}
         >
+        <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+        }}>
           <View style={styles.modalView}>
 
             <View style={styles.details}>
@@ -116,7 +150,12 @@ export default function TodoList() {
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
               <View style={styles.descBox}>
-                <Text>{name}</Text>
+                {/* <Text>{name}</Text> */}
+                <TextInput
+                            placeholder={name}
+                            maxLength={50}
+                            onChangeText={(itemName => setName(itemName))}
+                        />
               </View>
 
               <View style={{ flexDirection: 'row' }}>
@@ -136,7 +175,12 @@ export default function TodoList() {
               </View>
 
               <View style={styles.descBox}>
-                <Text>{desc}</Text>
+                {/* <Text>{desc}</Text> */}
+                <TextInput
+                            placeholder={desc}
+                            maxLength={100}
+                            onChangeText={(itemDesc => setDesc(itemDesc))}
+                        />
               </View>
 
               <Pressable
@@ -147,9 +191,19 @@ export default function TodoList() {
                   HIDE
                 </Text>
               </Pressable>
+              <Pressable
+                style={[styles.button]}
+                onPress={() => handleUpdate()}
+              >
+                <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                  SUBMIT
+                </Text>
+              </Pressable>
             </View>
           </View>
+          </TouchableWithoutFeedback>
         </Modal>
+
 
         <Header
           statusBarProps={{ backgroundColor: '#ec2929' }}
