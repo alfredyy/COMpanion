@@ -12,10 +12,11 @@ export default function TodoList() {
   const [todos, setTodos] = useState([]);
   const componentMounted = useRef(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [name, setName] = useState('')
+  const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
-  const [datetime, setDateTime] = useState(new Date())
-  let loading = false
+  const [datetime, setDateTime] = useState(new Date());
+  const [id, setId] = useState('');
+  let loading = false;
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -64,6 +65,7 @@ export default function TodoList() {
   const handlePress = async (todo) => {
     setName(todo.item_name)
     setDesc(todo.description)
+    setId(todo.id)
     setDateTime(new Date(todo.datetime))
     setModalVisible(true)
   };
@@ -91,19 +93,14 @@ export default function TodoList() {
     return day + '/' + month + '/' + year
   }
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (id, name, desc) => {
         try {
             loading = true
-            //const user = supabaseClient.auth.user()
-            const { error } = await supabase
-                .from("todos")
-                .update({
-                  item_name: name,
-                  desc: desc,
-                }
-                .match({id: id})
-            )
-            if (error) throw error
+        const { error } = await supabaseClient
+            .from('todos')
+            .update({ item_name: name, description: desc })
+            .eq('id', id)
+        if (error) throw error
         } catch (error) {
             Toast.show({
                 type: 'error',
@@ -193,7 +190,7 @@ export default function TodoList() {
               </Pressable>
               <Pressable
                 style={[styles.button]}
-                onPress={() => handleUpdate()}
+                onPress={() => handleUpdate(id, name, desc)}
               >
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   SUBMIT
