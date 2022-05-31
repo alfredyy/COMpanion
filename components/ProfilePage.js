@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import { Header, Icon, Card } from 'react-native-elements';
+import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto';
 
 export default function ProfilePage({ navigation }) {
     let loading = false;
-    const componentMounted = useRef(true);
     const [name, setName] = useState('')
     // const [email, setEmail] = useState('')
     const [tasksAdded, setTasksAdded] = useState(0)
@@ -33,46 +33,55 @@ export default function ProfilePage({ navigation }) {
         }
     }
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-          const { data, error } = await supabaseClient
-            .from('profiles')
-            .select('name, owned_companions')
-          if (error) {
-            console.log('error', error);
-          } else {
-            console.log('Selected: ', data);
-            setName(data[0].name);
-            setCompanionsAdopted(data[0].owned_companions.length)
-          }
-        };
-        if (componentMounted.current) {
-          fetchProfile();
-        }
-        return () => {
-          componentMounted.current = false;
-        };
-      }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            let isActive = true;
 
-      useEffect(() => {
-        const fetchTodos = async () => {
-          const { data, error } = await supabaseClient
-            .from('todos')
-            .select('id', {count: 'exact'})
-          if (error) {
-            console.log('error', error);
-          } else {
-            console.log('Selected: ', data);
-            setTasksAdded(data.length);
-          }
-        };
-        if (componentMounted.current) {
-          fetchTodos();
-        }
-        return () => {
-          componentMounted.current = false;
-        };
-      }, []);
+            const fetchProfile = async () => {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('profiles')
+                        .select('name, owned_companions')
+                    if (isActive) {
+                        console.log(data)
+                        setName(data[0].name);
+                        setCompanionsAdopted(data[0].owned_companions.length)
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                }
+            };
+
+            fetchProfile();
+
+            return () => {
+                isActive = false
+            };
+        }, []));
+
+    useFocusEffect(
+        React.useCallback(() => {
+            let isActive = true;
+            const fetchTodos = async () => {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('todos')
+                        .select('id', { count: 'exact' })
+                    if (isActive) {
+                        console.log(data);
+                        setTasksAdded(data.length);
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                }
+            };
+
+            fetchTodos();
+
+            return () => {
+                isActive = false;
+            };
+        }, []));
 
     return (
         <TouchableWithoutFeedback onPress={() => {

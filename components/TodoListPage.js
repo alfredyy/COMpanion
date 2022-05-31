@@ -3,6 +3,7 @@ import { Button, Input, ListItem, CheckBox, Text, Header, Icon } from 'react-nat
 import React, { useEffect, useRef, useState } from 'react';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
+import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 
 import { AntDesign } from '@expo/vector-icons';
@@ -10,7 +11,6 @@ import { AntDesign } from '@expo/vector-icons';
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
-  const componentMounted = useRef(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
@@ -18,27 +18,31 @@ export default function TodoList() {
   const [id, setId] = useState('');
   let loading = false;
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      const { data, error } = await supabaseClient
-        .from('todos')
-        .select('*')
-        .order('datetime', { ascending: true });
-      if (error) {
-        console.log('error', error);
-      } else {
-        console.log('Todos: ', data);
-        setTodos(data);
-      }
-    };
-    if (componentMounted.current) {
-      fetchTodos();
-    }
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true;
 
-    return () => {
-      componentMounted.current = false;
-    };
-  }, []);
+      const fetchTodos = async () => {
+        try {
+          const { data, error } = await supabaseClient
+            .from('todos')
+            .select('*')
+            .order('datetime', { ascending: true });
+          if (isActive) {
+            console.log('Todos: ', data);
+        setTodos(data);
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      };
+
+      fetchTodos();
+
+      return () => {
+        isActive = false
+      };
+    }, []));
 
   const toggleCompleted = async (id, completed) => {
     const { data, error } = await supabaseClient
@@ -139,7 +143,7 @@ export default function TodoList() {
 
             <View style={styles.details}>
               <Icon name='info' type='feather' color='#fff' />
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft:20 }}>
+              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
                 Task Details
               </Text>
             </View>
@@ -317,12 +321,12 @@ const styles = StyleSheet.create({
   details: {
     backgroundColor: "#ec2929",
     flexDirection: 'row',
-    justifyContent: 'flex-start', 
-    alignItems:'baseline', 
-    paddingLeft: 40, 
+    justifyContent: 'flex-start',
+    alignItems: 'baseline',
+    paddingLeft: 40,
     paddingBottom: 20,
-    paddingTop:25,
-    borderTopLeftRadius:20,
+    paddingTop: 25,
+    borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginBottom: 20
   }

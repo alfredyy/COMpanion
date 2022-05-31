@@ -1,35 +1,40 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Header, Icon, Card } from 'react-native-elements';
+import { useFocusEffect } from '@react-navigation/native';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
 
 export default function HomePage({ navigation }) {
   const daynight = (new Date().getHours() < 12 ? 'Good Morning!' : 'Hello!');
-  const componentMounted = useRef(true);
   const [selectedCompanion, setSelectedCompanion] = useState('')
   const [companionImage, setCompanionImage] = useState(require('../assets/white.png')) //PLACEHOLDER FOR NOW
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabaseClient
-        .from('profiles')
-        .select('selected_companion')
-      if (error) {
-        console.log('error', error);
-      } else {
-        console.log('Selected: ', data);
-        setSelectedCompanion(data[0].selected_companion);
-        // setCompanionImage(require('../assets/mack/mack3.png')) //FIGURE OUT HOW TO GET IMAGE FROM ASSETS 
-      }
-    };
-    if (componentMounted.current) {
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true;
+
+      const fetchData = async () => {
+        try {
+          const { data, error } = await supabaseClient
+            .from('profiles')
+            .select('selected_companion')
+          if (isActive) {
+            console.log('Selected: ', data);
+            setSelectedCompanion(data[0].selected_companion);
+            // setCompanionImage(require('../assets/mack/mack3.png')) //FIGURE OUT HOW TO GET IMAGE FROM ASSETS 
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      };
+
       fetchData();
-    }
-    return () => {
-      componentMounted.current = false;
-    };
-  }, []);
+
+      return () => {
+        isActive = false
+      };
+    }, []));
 
   return (
 

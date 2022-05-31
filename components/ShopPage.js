@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, ScrollView, Image } from 'react-native';
 import { Button, Text, Header, Icon, Card } from 'react-native-elements';
+import { useFocusEffect } from '@react-navigation/native';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
 import Toast from 'react-native-toast-message';
@@ -10,28 +11,32 @@ export default function ShopPage({ navigation }) {
     const [currency, setCurrency] = useState(0);
     const [ownedCompanions, setOwnedCompanions] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const { data, error } = await supabaseClient
+    useFocusEffect(
+        React.useCallback(() => {
+          let isActive = true;
+    
+          const fetchData = async () => {
+            try {
+                const { data, error } = await supabaseClient
                 .from('profiles')
                 .select('currency, owned_companions')
-            if (error) {
-                console.log('error', error);
-            } else {
+              if (isActive) {
                 console.log('Currency: ', data[0].currency);
                 console.log('Owned Companions: ', data[0].owned_companions)
                 setCurrency(data[0].currency);
                 setOwnedCompanions(data[0].owned_companions)
+              }
+            } catch (error) {
+              console.log(error.message);
             }
-        };
-        if (componentMounted.current) {
-            fetchData();
-        }
-
-        return () => {
-            componentMounted.current = false;
-        };
-    });
+          };
+    
+          fetchData();
+    
+          return () => {
+            isActive = false
+          };
+        }, []));
 
     //ADOPT COMPANION NOT TESTED YET
     const adoptCompanion = async (name) => {
