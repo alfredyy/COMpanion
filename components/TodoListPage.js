@@ -5,6 +5,7 @@ import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
 import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { AntDesign } from '@expo/vector-icons';
 
@@ -15,6 +16,8 @@ export default function TodoList() {
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [datetime, setDateTime] = useState(new Date());
+  const [show, setShow] = useState(false)
+  const [mode, setMode] = useState('date')
   const [id, setId] = useState('');
   let loading = false;
 
@@ -74,6 +77,22 @@ export default function TodoList() {
     setModalVisible(true)
   };
 
+  const showDate = () => {
+    setShow(true)
+    setMode('date')
+}
+
+const showTime = () => {
+    setShow(true)
+    setMode('time')
+}
+
+const onChange = (event, selectedDate) => {
+  let currentDate = selectedDate;
+  setShow(false)
+  setDateTime(selectedDate)
+}
+
   const timeFormatter = () => {
     let hours = datetime.getHours()
     let ampm = "am"
@@ -97,12 +116,12 @@ export default function TodoList() {
     return day + '/' + month + '/' + year
   }
 
-  const handleUpdate = async (id, name, desc) => {
+  const handleUpdate = async (id, name, desc, datetime) => {
         try {
             loading = true
         const { error } = await supabaseClient
             .from('todos')
-            .update({ item_name: name, description: desc })
+            .update({ item_name: name, description: desc, datetime: datetime.toISOString() })
             .eq('id', id)
         if (error) throw error
         } catch (error) {
@@ -161,19 +180,30 @@ export default function TodoList() {
 
               <View style={{ flexDirection: 'row' }}>
                 <View style={styles.DTBox}>
+                  <TouchableOpacity onPress={showDate}>
                   <Icon name='date-range' type='material' color='gray' />
                   <Text style={{ fontFamily: "Roboto", padding: 5 }}>
                     {dateFormatter()}
                   </Text>
+                  </TouchableOpacity>
                 </View>
 
                 <View style={styles.DTBox}>
+                  <TouchableOpacity onPress={showTime}>
                   <Icon name='access-time' type='material' color='gray' />
                   <Text style={{ fontFamily: "Roboto", padding: 5 }}>
                     {timeFormatter()}
                   </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
+              {show && (
+                        <DateTimePicker
+                            mode={mode}
+                            onChange={onChange}
+                            value={datetime}
+                            minimumDate={Date.now()} />
+                    )}
 
               <View style={styles.descBox}>
                 {/* <Text>{desc}</Text> */}
@@ -194,7 +224,7 @@ export default function TodoList() {
               </Pressable>
               <Pressable
                 style={[styles.button]}
-                onPress={() => handleUpdate(id, name, desc)}
+                onPress={() => handleUpdate(id, name, desc, datetime)}
               >
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   SUBMIT
