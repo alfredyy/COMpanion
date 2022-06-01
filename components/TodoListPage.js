@@ -33,7 +33,7 @@ export default function TodoList() {
             .order('datetime', { ascending: true });
           if (isActive) {
             console.log('Todos: ', data);
-        setTodos(data);
+            setTodos(data);
           }
         } catch (error) {
           console.log(error.message);
@@ -80,18 +80,18 @@ export default function TodoList() {
   const showDate = () => {
     setShow(true)
     setMode('date')
-}
+  }
 
-const showTime = () => {
+  const showTime = () => {
     setShow(true)
     setMode('time')
-}
+  }
 
-const onChange = (event, selectedDate) => {
-  let currentDate = selectedDate;
-  setShow(false)
-  setDateTime(selectedDate)
-}
+  const onChange = (event, selectedDate) => {
+    let currentDate = selectedDate;
+    setShow(false)
+    setDateTime(selectedDate)
+  }
 
   const timeFormatter = () => {
     let hours = datetime.getHours()
@@ -117,28 +117,28 @@ const onChange = (event, selectedDate) => {
   }
 
   const handleUpdate = async (id, name, desc, datetime) => {
-        try {
-            loading = true
-        const { error } = await supabaseClient
-            .from('todos')
-            .update({ item_name: name, description: desc, datetime: datetime.toISOString() })
-            .eq('id', id)
-        if (error) throw error
-        } catch (error) {
-            Toast.show({
-                type: 'error',
-                text1: 'Error',
-                text2: error.message
-            });
-        } finally {
-            loading = false
-            Toast.show({
-                type: 'success',
-                text1: 'Task Updated!',
-            });
-        }
-    
-}
+    try {
+      loading = true
+      const { error } = await supabaseClient
+        .from('todos')
+        .update({ item_name: name, description: desc, datetime: datetime.toISOString() })
+        .eq('id', id)
+      if (error) throw error
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.message
+      });
+    } finally {
+      loading = false
+      Toast.show({
+        type: 'success',
+        text1: 'Task Updated!',
+      });
+    }
+
+  }
 
 
   return (
@@ -155,81 +155,83 @@ const onChange = (event, selectedDate) => {
             setModalVisible(!modalVisible);
           }}
         >
-        <TouchableWithoutFeedback onPress={() => {
+          <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
-        }}>
-          <View style={styles.modalView}>
+          }}>
+            <View style={styles.modalView}>
 
-            <View style={styles.details}>
-              <Icon name='info' type='feather' color='#fff' />
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
-                Task Details
-              </Text>
-            </View>
-
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-
-              <View style={styles.descBox}>
-                <TextInput
-                            value={name}
-                            maxLength={50}
-                            onChangeText={(itemName => setName(itemName))}
-                        />
+              <View style={styles.details}>
+                <Icon name='info' type='feather' color='#fff' />
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
+                  Task Details
+                </Text>
               </View>
 
-              <View style={{ flexDirection: 'row' }}>
-                <View style={styles.DTBox}>
-                  <TouchableOpacity onPress={showDate}>
-                  <Icon name='date-range' type='material' color='gray' />
-                  <Text style={{ fontFamily: "Roboto", padding: 5 }}>
-                    {dateFormatter()}
-                  </Text>
-                  </TouchableOpacity>
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+                <View style={styles.descBox}>
+                  <TextInput
+                    value={name}
+                    maxLength={50}
+                    onChangeText={(itemName => setName(itemName))}
+                    multiline={true}
+                  />
                 </View>
 
-                <View style={styles.DTBox}>
-                  <TouchableOpacity onPress={showTime}>
-                  <Icon name='access-time' type='material' color='gray' />
-                  <Text style={{ fontFamily: "Roboto", padding: 5 }}>
-                    {timeFormatter()}
-                  </Text>
+                <View style={{ flexDirection: "row" }}>
+                  <TouchableOpacity style={styles.DTBox} onPress={showDate}>
+                    <Icon name='date-range' type='material' color='gray' />
+                    <Text style={{ fontFamily: "Roboto", padding: 5 }}>
+                      {dateFormatter()}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.DTBox} onPress={showTime}>
+                    <Icon name='access-time' type='material' color='gray' />
+                    <Text style={{ fontFamily: "Roboto", padding: 5 }}>
+                      {timeFormatter()}
+                    </Text>
                   </TouchableOpacity>
                 </View>
-              </View>
-              {show && (
-                        <DateTimePicker
-                            mode={mode}
-                            onChange={onChange}
-                            value={datetime}
-                            minimumDate={Date.now()} />
-                    )}
+                {show && (
+                  <DateTimePicker
+                    mode={mode}
+                    onChange={onChange}
+                    value={datetime}
+                    minimumDate={Date.now()} />
+                )}
 
-              <View style={styles.descBox}>
-                <TextInput
-                            value={desc}
-                            maxLength={100}
-                            onChangeText={(itemDesc => setDesc(itemDesc))}
-                        />
-              </View>
+                <View style={styles.descBox}>
+                  <TextInput
+                    value={desc}
+                    multiline={true}
+                    numberOfLines={9}
+                    maxLength={280}
+                    onChangeText={(desc => setDesc(desc))}
+                    textAlignVertical='top'
+                  />
+                </View>
 
-              <Pressable
-                style={[styles.button]}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
-                  HIDE
-                </Text>
-              </Pressable>
-              <Pressable
-                style={[styles.button]}
-                onPress={() => handleUpdate(id, name, desc, datetime)}
-              >
-                <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
-                  SUBMIT
-                </Text>
-              </Pressable>
+                <Pressable
+                  style={[styles.primaryButton]}
+                  onPress={() => handleUpdate(id, name, desc, datetime)}
+                >
+                  <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    SAVE CHANGES
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.secondaryButton]}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={{ color: '#ec2929', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    HIDE
+                  </Text>
+                </Pressable>
+
+              </View>
             </View>
-          </View>
           </TouchableWithoutFeedback>
         </Modal>
 
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    marginTop: "25%",
+    marginTop: "20%",
     backgroundColor: "#f9f9f9",
     borderRadius: 20,
     // paddingTop: 35,
@@ -318,7 +320,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5
   },
-  button: {
+  primaryButton: {
     backgroundColor: '#ec2929',
     borderRadius: 10,
     width: '80%',
@@ -327,9 +329,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20
   },
+  secondaryButton: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    width: '80%',
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    borderColor: '#ec2929',
+    borderWidth: 1
+  },
   DTBox: {
     backgroundColor: "#fff",
-    width: "35%",
+    // width: "35%",
     borderRadius: 25,
     height: 55,
     marginRight: Dimensions.get("window").width * 0.05,
@@ -337,13 +350,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: "center",
     alignItems: "center",
-    flexDirection: 'row'
+    flexDirection: 'row',
+    padding: 10
   },
   descBox: {
     backgroundColor: "#fff",
     width: "80%",
     borderRadius: 25,
-    marginBottom: 20,
+    marginBottom: 10,
     padding: 20,
   },
   details: {
