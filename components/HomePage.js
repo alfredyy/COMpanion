@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import { Header, Icon, Card } from 'react-native-elements';
 import { useFocusEffect } from '@react-navigation/native';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
+import { ImageDirectory } from '../images';
 
 export default function HomePage({ navigation }) {
   const daynight = (new Date().getHours() < 12 ? 'Good Morning!' : 'Hello!');
   const [selectedCompanion, setSelectedCompanion] = useState('')
-  const [companionImage, setCompanionImage] = useState(require('../assets/white.png')) //PLACEHOLDER FOR NOW
+  // const [companionImage, setCompanionImage] = useState(require('../assets/white.png')) //PLACEHOLDER FOR NOW
+  const [randomNo, setRandomNo] = useState(Math.floor(Math.random() * 14) + 1)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -22,7 +24,7 @@ export default function HomePage({ navigation }) {
           if (isActive) {
             console.log('Selected: ', data);
             setSelectedCompanion(data[0].selected_companion);
-            // setCompanionImage(require('../assets/mack/mack3.png')) //FIGURE OUT HOW TO GET IMAGE FROM ASSETS 
+            setRandomNo(Math.floor(Math.random() * 14) + 1);
           }
         } catch (error) {
           console.log(error.message);
@@ -35,6 +37,10 @@ export default function HomePage({ navigation }) {
         isActive = false
       };
     }, []));
+
+  const numberRandomizer = () => {
+    setRandomNo(Math.floor(Math.random() * 14) + 1);
+  }
 
   return (
 
@@ -69,9 +75,17 @@ export default function HomePage({ navigation }) {
             </Text>
           </View>
         </Card>
-        <Image source={companionImage} />
+
+        <TouchableOpacity onPress={() => numberRandomizer()}>
+          <View>
+            <Image
+              source={selectedCompanion != '' ? ImageDirectory[selectedCompanion][randomNo] : ImageDirectory[selectedCompanion]}
+              // source={ImageDirectory['']} //FOR TESTING PURPOSES -> NEW USERS WHEN THEY DONT HAVE A SELECTED COMPANION
+              style={styles.companionImage} />
+          </View>
+        </TouchableOpacity>
       </ScrollView>
-    </TouchableWithoutFeedback>
+    </TouchableWithoutFeedback >
   );
 }
 
@@ -101,4 +115,10 @@ const styles = StyleSheet.create({
     elevation: 20,
     shadowColor: '#52006A',
   },
+  companionImage: {
+    flex: 1,
+    width: 250,
+    resizeMode: 'contain',
+    marginBottom: 100
+  }
 });
