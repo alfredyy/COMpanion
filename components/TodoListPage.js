@@ -170,9 +170,8 @@ const onChange = (event, selectedDate) => {
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
               <View style={styles.descBox}>
-                {/* <Text>{name}</Text> */}
                 <TextInput
-                            placeholder={name}
+                            value={name}
                             maxLength={50}
                             onChangeText={(itemName => setName(itemName))}
                         />
@@ -206,9 +205,8 @@ const onChange = (event, selectedDate) => {
                     )}
 
               <View style={styles.descBox}>
-                {/* <Text>{desc}</Text> */}
                 <TextInput
-                            placeholder={desc}
+                            value={desc}
                             maxLength={100}
                             onChangeText={(itemDesc => setDesc(itemDesc))}
                         />
