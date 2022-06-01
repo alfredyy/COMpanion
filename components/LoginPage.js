@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
 import { Icon } from 'react-native-elements';
@@ -19,7 +19,7 @@ export default function LoginPage({ navigation }) {
     } else {
       try {
         loading = true
-        const { error } = await supabaseClient.auth.signIn({
+        const { user, error } = await supabaseClient.auth.signIn({
           email: email,
           password: password,
         })
