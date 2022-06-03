@@ -8,7 +8,8 @@ import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
-// import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+
 
   const timeToString = (time) => {
         const date = new Date(time);
@@ -464,10 +465,12 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 //import { Header } from 'react-native-elements';
 //import { Agenda } from 'react-native-calendars';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+//import { AntDesign } from '@expo/vector-icons';
 
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useForceUpdate } from '@chakra-ui/react';
+import { render } from 'react-dom';
 
 
 
@@ -781,9 +784,11 @@ const sizes = {
 // }
 
 
-
 export default function TodoList() {
+  const [rawtodos, setRawtodos] = useState();
   const [todos, setTodos] = useState({});
+  const [items, setItems] = useState({});
+  const [datas, setDatas] = useState();
 
 
     useFocusEffect(
@@ -798,6 +803,7 @@ export default function TodoList() {
             .order('datetime', { ascending: true });
           if (isActive) {
             console.log(data);
+            setRawtodos(data);
             const reduced = data.reduce((acc, currentItem) => {
               const {datetime, ...coolItem} = currentItem;
               acc[timeToString(datetime)] = [coolItem];
@@ -805,6 +811,7 @@ export default function TodoList() {
             }, {});
             console.log(reduced);
             setTodos(reduced);
+            setDatas(data);
           }
         } catch (error) {
           console.log(error.message);
@@ -817,20 +824,76 @@ export default function TodoList() {
         isActive = false
       };
     }, []));
+    
+    const toggleCompleted = async (id, completed) => {
+      const { data, error } = await supabaseClient
+        .from('todos')
+        .update({ completed: !completed })
+        .eq('id', id)
+        .single();
+      if (error) {
+        console.log(error);
+      } 
+      else {
+        setRawtodos(rawtodos.map(todo => (todo.id === id ? data : todo)));
+        
+
+      }
+    };
+  
+    const deleteTodo = async id => {
+      const { error } = await supabaseClient.from('todos').delete().eq('id', id);
+      if (error) {
+        console.log('error', error);
+      } 
+      else {
+        setRawtodos(rawtodos.filter(x => x.id !== Number(id)));
+      }
+    };
+    
+    
 
   const renderItem = (item) => {
     return (
       <View style={styles.item}>
-        <Text>{item.item_name}</Text>
+        <CheckBox
+          checked={item.completed}
+          onPress={() => toggleCompleted(item.id, item.completed)}
+        />
+        <Text style={styles.task}>{item.item_name}</Text>
+        <AntDesign name="delete" size={24} color="black" onPress={() => deleteTodo(item.id)} />
       </View>
     );
   };
 
+  const renderKnobIcon = () => {
+        return (
+            <TouchableOpacity /*onPress = {() => openCalendar ? setOpenCalendar(false) : setOpenCalendar(true)}*/>
+                <MaterialCommunityIcons name="ray-vertex" size={30} color="#283747" />
+            </TouchableOpacity>
+        );
+  };
 
 
-  useEffect(() => {
-    fetch
-  }, [])
+  // const loadItems = () => {
+  //   datas.forEach((element) => {
+  //     const strTime = timeToString(element.datetime);
+  //     if (!items[strTime]) {
+  //       items[strTime] = [];
+  //       datas.forEach((datalist) => {
+  //         items[strTime].push({
+  //           name: datalist.item_name,
+  //         });
+  //       });
+  //     }
+  //   });
+  //   const newItems = {};
+  //   Object.keys(items).forEach((key) => {
+  //     newItems[key] = items[key];
+  //   });
+  //   setItems(newItems);
+  //   };
+
 
   return (
     <View style={styles.container}>
@@ -844,7 +907,22 @@ export default function TodoList() {
             alignItems: 'baseline'
           }}
         />
-      <Agenda items={todos} renderItem={renderItem} />
+      <Agenda 
+      items={todos} 
+      //loadItemsForMonth={loadItems}
+      renderItem={renderItem} 
+      pastScrollRange={12} 
+      futureScrollRange={12}  
+      renderKnob={renderKnobIcon}
+      hideKnob={false}
+      showClosingKnob={true}
+      disabledByDefault={false}
+      refreshing={false}
+      showScrollIndicator={true}
+      scrollEnabled={true}
+      pagingEnabled={true}
+      //style={{height:400}}
+       />
     </View>
   )
 }
@@ -856,7 +934,6 @@ export default function TodoList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: 'black',
   },
     item: {
         backgroundColor: 'white',
@@ -864,7 +941,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         marginRight: 10,
-        marginTop: 17
+        marginTop: 17,
+        flexDirection: 'row',
+        alignItems: "center",
+        justifyContent: 'flex-start'
+    },
+    task: {
+      width: 200,
     },
     emptyDate: {
         height: 15,
