@@ -1,5 +1,5 @@
 export const ImageDirectory = {
-    '': require('./assets/white.png'),
+    '': require('./assets/ec2929.png'),
     'mack': {
         '1': require('./assets/mack/mack1.png'),
         '2': require('./assets/mack/mack2.png'),

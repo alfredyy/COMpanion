@@ -61,8 +61,20 @@ function HomeTabs() {
       <Tab.Screen name="AddToDo" component={AddToDoPage}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View>
-              <Icon name='add-circle-outline' type='material' color='#fff' size={45} />
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 10, // space from bottombar
+                height: 58,
+                width: 58,
+                borderRadius: 58,
+                backgroundColor: '#fff',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: '#ec2929',
+                borderWidth: 5
+              }}>
+              <Icon name='add' type='material' color='#ec2929' size={45} />
             </View>
           )
         }} />
@@ -74,7 +86,7 @@ function HomeTabs() {
             </View>
           )
         }} />
-        <Tab.Screen name="Profile" component={ProfilePage}
+      <Tab.Screen name="Profile" component={ProfilePage}
         options={{
           tabBarIcon: ({ focused }) => (
             <View>
