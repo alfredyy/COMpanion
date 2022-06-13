@@ -17,6 +17,7 @@ export default function HomePage({ navigation }) {
   const [lastFed, setLastFed] = useState(new Date())
   const [health, setHealth] = useState(100)
   const [inventory, setInventory] = useState({ "bacon": 0, "bread": 0, "chicken": 0, "egg": 0, "meatball": 0, "salmon": 0, "steak": 0, "sushi": 0 })
+  const [mood, setMood] = useState('happy')
 
   useFocusEffect(
     React.useCallback(() => {
@@ -32,8 +33,6 @@ export default function HomePage({ navigation }) {
             setID(data[0].id)
             setSelectedCompanion(data[0].selected_companion);
             setCurrency(data[0].currency)
-            setRandomNo(Math.floor(Math.random() * 14) + 1);
-            setPosition(Math.floor(Math.random() * 3) + 1);
             setLastFed(new Date(data[0].last_fed))
             healthCalculator(new Date(data[0].last_fed))
           }
@@ -43,6 +42,20 @@ export default function HomePage({ navigation }) {
       };
 
       fetchData();
+      setRandomNo(health < 30 ? 'angry' : Math.floor(Math.random() * 14) + 1);
+      setPosition(Math.floor(Math.random() * 3) + 1);
+
+      switch(true) {
+        case (health < 30):
+          setMood('angry')
+          break;
+        case (randomNo <= 2):
+          setMood('tired')
+          break;
+        case (randomNo > 2):
+          setMood('happy')
+          break;
+      }
 
       return () => {
         isActive = false
@@ -314,6 +327,9 @@ export default function HomePage({ navigation }) {
 
       <ScrollView style={{ flex: 1 }} horizontal>
         <ImageBackground source={require('../assets/backgrounds/roomday.png')} style={{ height: '100%', width: 800 }}>
+        <Image
+            source={selectedCompanion != '' ? ImageDirectory[mood][mood == 'tired' ? 1 : Math.floor(Math.random() * 4) + 1] : ImageDirectory['']} 
+            style={selectedCompanion != '' ? styles.companionMood[position] : styles.companionImage[position]} />
           <Image
             source={selectedCompanion != '' ? ImageDirectory[selectedCompanion][randomNo] : ImageDirectory['']}
             // source={ImageDirectory['']} //FOR TESTING PURPOSES -> NEW USERS WHEN THEY DONT HAVE A SELECTED COMPANION
@@ -406,6 +422,32 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 100,
       right: 200
+    }
+  },
+  companionMood: {
+    '1': {
+      resizeMode: 'contain',
+      position: 'absolute',
+      bottom: 225,
+      left: 150,
+      height: 50,
+      width: 50
+    },
+    '2': {
+      resizeMode: 'contain',
+      position: 'absolute',
+      bottom: 390,
+      left: 150,
+      height: 50,
+      width: 50
+    },
+    '3': {
+      resizeMode: 'contain',
+      position: 'absolute',
+      bottom: 225,
+      right: 250,
+      height: 50,
+      width: 50
     }
   },
   box: {
