@@ -6,8 +6,8 @@ import 'react-native-url-polyfill/auto'
 import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
-//import { Icon } from 'react-native-elements';
-// import {Calendar, CalendarList, Agenda, AgendaEntry, AgendaSchedule} from 'react-native-calendars';
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+
 import CalendarStrip from 'react-native-calendar-strip';
 import Menu, {
   MenuProvider,
@@ -20,6 +20,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
   
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
+  const[todoss, setTodoss] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
@@ -27,8 +28,10 @@ export default function TodoList() {
   const [show, setShow] = useState(false)
   const [mode, setMode] = useState('date')
   const [id, setId] = useState('');
-  //const [donedates, setDonedates] = ([]);
+  const [currency, setCurrency] = useState(0);
+  const [iD, setID] = useState('');
   let loading = false;
+  //const [markedDatesArray, setMarkedDatesArray] = useState({});
 
   // useFocusEffect(
   //   React.useCallback(() => {
@@ -59,6 +62,68 @@ export default function TodoList() {
     // }, []));
 
     let dDates = [];
+    let markedDatesArrayy = [];
+
+    // useFocusEffect(
+    //   React.useCallback(() => {
+    //   let isActive = true;
+
+    //   const fetchTodos = async () => {
+    //       const { data, error } = await supabaseClient
+    //         .from('todos')
+    //         .select('*')
+    //         .order('datetime', { ascending: true });
+    //         if (error) {
+    //           console.log(error);
+    //       } else {
+    //         console.log('Todos: ', data);
+    //         setTodoss(data);
+    //         dDates = [];
+    //         data.forEach(x => {
+    //           console.log(x);
+    //           dDates.push(timeToStringg(x.datetime));
+    //         })
+    //         console.log('dDates: ', dDates);
+    //       }
+    //   }
+
+    //   fetchTodos();
+
+    //   return () => {
+    //     isActive = false
+    //   };
+    // }, []));
+
+
+    useFocusEffect(
+      React.useCallback(() => {
+          let isActive = true;
+
+          const fetchData = async () => {
+              try {
+                  const { data, error } = await supabaseClient
+                      .from('profiles')
+                      .select('id, currency')
+                  if (isActive) {
+                      console.log('data: ', data[0])
+                      setID(data[0].id)
+                      setCurrency(data[0].currency);
+                  }
+              } catch (error) {
+                  console.log(error.message);
+              }
+          };
+
+          fetchData();
+
+          return () => {
+              isActive = false
+          };
+      }, []));
+
+    
+
+
 
     const fetchTodosweek = async (start, end) => {
       var nextdate = new Date(end);
@@ -74,17 +139,20 @@ export default function TodoList() {
           } else {
             console.log('Todos: ', data);
             setTodos(data);
-            dDates = [];
-            data.forEach(x => {
-              console.log(x);
-              dDates.push(timeToStringg(x.datetime));
-            })
-            // setDonedates(dDates);
-            console.log('dDates: ', dDates);
+            // dDates = [];
+            // data.forEach(x => {
+            //   console.log(x);
+            //   dDates.push(timeToStringg(x.datetime));
+            // })
+            // console.log('dDates: ', dDates);
+            markedDatesFunc();
+            // console.log('datee: ', markedDatesArrayy[0].date);
+            // console.log('dotss: ', markedDatesArrayy[0].dots);
+            // console.log('markedDatesArray', markedDatesArrayy);
           }
     }
 
-  const toggleCompleted = async (id, completed) => {
+  const toggleCompleted = async (id, completed, ID) => {
     const { data, error } = await supabaseClient
       .from('todos')
       .update({ completed: !completed })
@@ -95,6 +163,24 @@ export default function TodoList() {
     } else {
       setTodos(todos.map(todo => (todo.id === id ? data : todo)));
     }
+
+    if (completed == false) 
+    {const { data1, error1 } = await supabaseClient
+      .from('profiles')
+      .update({ currency: currency + 10 })
+      .eq('id', ID)
+    if (error1) {
+      console.log(error);
+    } else {
+      Toast.show({
+        type: 'success',
+        text1: "Well done, you've just earned 10 coins!",
+      })
+
+    }
+   }
+
+
   };
 
   const deleteTodo = async id => {
@@ -201,17 +287,72 @@ export default function TodoList() {
     return date.toISOString().split('T')[0];
   };
 
-  // const markedDatesFunc = [
-  //   {
-  //     date: dDates,
-  //     dots: [
-  //       {
-  //         color: 'black'
-  //         //selectedColor: <string> (optional),
-  //       },
-  //     ],
-  //   },
-  // ];
+    // Marked dates callback
+    // markedDatesFunc = date => {
+    //   // Dot
+    //   if (date.isoWeekday() === 4) { // Thursdays
+    //     return {
+    //       dots:[{
+    //         color: <string>,
+    //         selectedColor: <string> (optional),
+    //       }]
+    //     };
+    //   }
+    //   // Line
+    //   if (date.isoWeekday() === 6) { // Saturdays
+    //     return {
+    //       lines:[{
+    //         color: <string>,
+    //         selectedColor: <string> (optional),
+    //       }]
+    //     };
+    //   }
+    //   return {};
+    // }
+
+    // const markedDatesArray = [
+    //   {
+    //     date: "2022-06-11",
+    //     dots: [
+    //       {
+    //         color: "red",
+    //         selectedColor: "red"
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     date: "2022-06-12",
+    //     dots: [
+    //       {
+    //         color: "red",
+    //         selectedColor: "red"
+    //       }
+    //     ]
+    //   }
+    // ];
+  
+
+    const markedDatesFunc = () => {
+        markedDatesArrayy = [];
+        dDates.forEach(x => {
+          markedDatesArrayy.push(
+            {date: `${x}`, 
+            dots: [
+            {
+              color: "red",
+              selectedColor: "red"
+            }
+          ]});
+        });
+        
+        //setMarkedDatesArray(markedDatesArray);
+        // console.log('datee: ', markedDatesArrayy[0].date);
+        // console.log('dotss: ', markedDatesArrayy[0].dots);
+        //console.log('markedDatesArrayy', markedDatesArrayy);
+        
+    };
+  
+
 
   
 
@@ -326,7 +467,7 @@ export default function TodoList() {
          <View style={styles.container}>
           <CalendarStrip
             //scrollable
-            //markedDates={markedDatesFunc}
+            //markedDates={markedDatesArrayy}
             onWeekChanged={(start, end) => fetchTodosweek(start, end)}
             style={{height:80, paddingTop: 10, paddingBottom: 10, marginBottom: 10}}
             calendarColor={'#fff'}
@@ -348,10 +489,21 @@ export default function TodoList() {
             renderItem={({ item: todo }) => (
 
             <View style={[styles.dFlex]}>
-               <CheckBox
+                <Menu onSelect={value => (value == 1) ? null : deleteTodo(todo.id)}>
+                  <MenuTrigger>
+                  <CheckBox
                   checked={todo.completed}
-                  onPress={() => toggleCompleted(todo.id, todo.completed)}
-                />
+                  onPress={() => toggleCompleted(todo.id, todo.completed, todo.user_id)}
+                  />
+                  </MenuTrigger>
+                  <MenuOptions>
+                  <MenuOption value={1} text='Keep' />
+                  <MenuOption value={2}>
+                  <Text style={{color: 'red'}}>Remove</Text>
+                  </MenuOption>
+                  </MenuOptions>
+                </Menu>
+
               
                 <View>
                   <Text style={[styles.mtAutoTime]}>
