@@ -5,6 +5,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
 import Toast from 'react-native-toast-message';
+import { BottomTabBar, BottomTabBarHeightContext, useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import style from 'react-native-password-strength-meter/src/style';
 
 export default function ShopPage({ navigation }) {
     const componentMounted = useRef(true);
@@ -22,9 +24,7 @@ export default function ShopPage({ navigation }) {
                         .from('profiles')
                         .select('id, currency, owned_companions')
                     if (isActive) {
-                        console.log('ID: ', data[0].id)
-                        console.log('Currency: ', data[0].currency);
-                        console.log('Owned Companions: ', data[0].owned_companions)
+                        console.log('data: ', data[0])
                         setID(data[0].id)
                         setCurrency(data[0].currency);
                         setOwnedCompanions(data[0].owned_companions)
@@ -41,7 +41,6 @@ export default function ShopPage({ navigation }) {
             };
         }, []));
 
-    //ADOPT COMPANION DOESNT WORK YET
     const adoptCompanion = async (name) => {
         if (currency < 160) {
             Toast.show({
@@ -70,6 +69,67 @@ export default function ShopPage({ navigation }) {
         }
     };
 
+    const buyItem = async (item, cost) => {
+        if (currency < cost) {
+            Toast.show({
+                type: 'error',
+                text1: 'Insufficient Coins!',
+                text2: 'Complete tasks to earn coins!'
+            });
+        } else {
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .update({ currency: currency - cost })
+                .eq('id', id)
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(data)
+                setCurrency(data[0].currency);
+            }
+
+            switch (item) {
+                case 'bread':
+                    await supabaseClient
+                        .rpc('incrementbread', { x: 1, row_id: id })
+                    break;
+                case 'bacon':
+                    await supabaseClient
+                        .rpc('incrementbacon', { x: 1, row_id: id })
+                    break;
+                case 'egg':
+                    await supabaseClient
+                        .rpc('incrementegg', { x: 1, row_id: id })
+                    break;
+                case 'meatball':
+                    await supabaseClient
+                        .rpc('incrementmeatball', { x: 1, row_id: id })
+                    break;
+                case 'sushi':
+                    await supabaseClient
+                        .rpc('incrementsushi', { x: 1, row_id: id })
+                    break;
+                case 'salmon':
+                    await supabaseClient
+                        .rpc('incrementsalmon', { x: 1, row_id: id })
+                    break;
+                case 'steak':
+                    await supabaseClient
+                        .rpc('incrementsteak', { x: 1, row_id: id })
+                    break;
+                case 'chicken':
+                    await supabaseClient
+                        .rpc('incrementchicken', { x: 1, row_id: id })
+                    break;
+            }
+            Toast.show({
+                type: 'success',
+                text1: 'Purchased!',
+                text2: `1 x ${item.toUpperCase()}`
+            })
+        }
+    }
+
     const selectCompanion = async (name) => {
         const { data, error } = await supabaseClient
             .from('profiles')
@@ -87,9 +147,7 @@ export default function ShopPage({ navigation }) {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={() => {
-            Keyboard.dismiss();
-        }}>
+        <>
             <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
                 <Header
                     statusBarProps={{ backgroundColor: '#ec2929' }}
@@ -123,55 +181,170 @@ export default function ShopPage({ navigation }) {
                         alignItems: 'baseline'
                     }}
                 />
+
+                <View style={styles.cardContainer}>
+                    <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold', fontSize: 24 }}>
+                        Companions
+                    </Text>
+                </View>
+
                 <View style={styles.cardRow}>
 
-                    <Card containerStyle={styles.cardContainer}>
+                    <View style={styles.cardContainer}>
                         <Image style={ownedCompanions.includes('mack') ? styles.unlocked : styles.locked} source={require('../assets/mack/mack3.png')} />
                         <TouchableOpacity style={styles.button} onPress={() => ownedCompanions.includes('mack') ? selectCompanion('mack') : adoptCompanion('mack')}>
                             <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                                 {ownedCompanions.includes('mack') ? 'SELECT' : 'ADOPT - 160'}
                             </Text>
                         </TouchableOpacity>
-                    </Card>
+                    </View>
 
-                    <Card containerStyle={styles.cardContainer}>
+                    <View style={styles.cardContainer}>
                         <Image style={ownedCompanions.includes('pickles') ? styles.unlocked : styles.locked} source={require('../assets/pickles/pickles3.png')} />
                         <TouchableOpacity style={styles.button} onPress={() => ownedCompanions.includes('pickles') ? selectCompanion('pickles') : adoptCompanion('pickles')}>
                             <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                                 {ownedCompanions.includes('pickles') ? 'SELECT' : 'ADOPT - 160'}
                             </Text>
                         </TouchableOpacity>
-                    </Card>
+                    </View>
 
-                    <Card containerStyle={styles.cardContainer}>
+                    <View style={styles.cardContainer}>
                         <Image style={ownedCompanions.includes('pumpkin') ? styles.unlocked : styles.locked} source={require('../assets/pumpkin/pumpkin3.png')} />
                         <TouchableOpacity style={styles.button} onPress={() => ownedCompanions.includes('pumpkin') ? selectCompanion('pumpkin') : adoptCompanion('pumpkin')}>
                             <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                                 {ownedCompanions.includes('pumpkin') ? 'SELECT' : 'ADOPT - 160'}
                             </Text>
                         </TouchableOpacity>
-                    </Card>
+                    </View>
 
-                    <Card containerStyle={styles.cardContainer}>
+                    <View style={styles.cardContainer}>
                         <Image style={ownedCompanions.includes('shadow') ? styles.unlocked : styles.locked} source={require('../assets/shadow/shadow3.png')} />
                         <TouchableOpacity style={styles.button} onPress={() => ownedCompanions.includes('shadow') ? selectCompanion('shadow') : adoptCompanion('shadow')}>
                             <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                                 {ownedCompanions.includes('shadow') ? 'SELECT' : 'ADOPT - 160'}
                             </Text>
                         </TouchableOpacity>
-                    </Card>
+                    </View>
+                </View>
+
+                <View style={styles.cardContainer}>
+                    <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold', fontSize: 24 }}>
+                        Food
+                    </Text>
+                </View>
+
+                <View style={styles.cardRow}>
+
+
+                    <View style={styles.cardContainer}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            Bread
+                        </Text>
+                        <Image source={require('../assets/food/bread.png')} style={styles.food} />
+                        <TouchableOpacity style={styles.button} onPress={() => buyItem('bread', 2)}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                BUY - 2
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.cardContainer}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            Bacon
+                        </Text>
+                        <Image source={require('../assets/food/bacon.png')} style={styles.food} />
+                        <TouchableOpacity style={styles.button} onPress={() => buyItem('bacon', 2)}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                BUY - 2
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.cardContainer}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            Egg
+                        </Text>
+                        <Image source={require('../assets/food/egg.png')} style={styles.food} />
+                        <TouchableOpacity style={styles.button} onPress={() => buyItem('egg', 2)}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                BUY - 2
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.cardContainer}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            Meatball
+                        </Text>
+                        <Image source={require('../assets/food/meatball.png')} style={styles.food} />
+                        <TouchableOpacity style={styles.button} onPress={() => buyItem('meatball', 4)}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                BUY - 4
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.cardContainer}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            Sushi
+                        </Text>
+                        <Image source={require('../assets/food/sushi.png')} style={styles.food} />
+                        <TouchableOpacity style={styles.button} onPress={() => buyItem('sushi', 8)}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                BUY - 8
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.cardContainer}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            Salmon
+                        </Text>
+                        <Image source={require('../assets/food/salmon.png')} style={styles.food} />
+                        <TouchableOpacity style={styles.button} onPress={() => buyItem('salmon', 10)}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                BUY - 10
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.cardContainer}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            Steak
+                        </Text>
+                        <Image source={require('../assets/food/steak.png')} style={styles.food} />
+                        <TouchableOpacity style={styles.button} onPress={() => buyItem('steak', 12)}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                BUY - 12
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.cardContainer}>
+                        <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                            Roasted Chicken
+                        </Text>
+                        <Image source={require('../assets/food/roastedchicken.png')} style={styles.food} />
+                        <TouchableOpacity style={styles.button} onPress={() => buyItem('chicken', 15)}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                BUY - 15
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
                 </View>
-                <Toast />
+
             </ScrollView>
-        </TouchableWithoutFeedback>
+            <Toast />
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#ead4aa',
+        marginBottom: 50
     },
     button: {
         backgroundColor: '#ec2929',
@@ -179,6 +352,7 @@ const styles = StyleSheet.create({
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
+        width: '90%'
     },
     locked: {
         tintColor: '#696969',
@@ -197,15 +371,24 @@ const styles = StyleSheet.create({
     },
     cardRow: {
         flexDirection: 'row',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         flexWrap: 'wrap',
-        justifyContent: 'center'
+        justifyContent: 'space-around'
     },
     cardContainer: {
-        borderRadius: 20,
-        backgroundColor: '#fff',
+        borderRadius: 3,
+        backgroundColor: '#3f2832',
+        borderColor: '#743f39',
+        borderWidth: 5,
         width: '40%',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: 5,
+        margin: 5
+    },
+    food: {
+        width: 50,
+        height: 50,
+        margin: 4
     }
 });

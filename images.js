@@ -1,5 +1,10 @@
 export const ImageDirectory = {
     '': require('./assets/ec2929.png'),
+    'background': {
+        'day': require('./assets/backgrounds/roomday.png'),
+        'evening': require('./assets/backgrounds/roomevening.png'),
+        'night': require('./assets/backgrounds/roomnight.png'),
+    },
     'mack': {
         '1': require('./assets/mack/mack1.png'),
         '2': require('./assets/mack/mack2.png'),
