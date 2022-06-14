@@ -225,6 +225,15 @@ export default function ShopPage({ navigation }) {
                             </Text>
                         </TouchableOpacity>
                     </View>
+
+                    {/* <View style={styles.cardContainer}>
+                        <Image style={ownedCompanions.includes('smokey') ? styles.unlocked : styles.locked} source={require('../assets/smokey/smokey3.png')} />
+                        <TouchableOpacity style={styles.button} onPress={() => ownedCompanions.includes('smokey') ? selectCompanion('smokey') : adoptCompanion('smokey')}>
+                            <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                                {ownedCompanions.includes('smokey') ? 'SELECT' : 'ADOPT - 160'}
+                            </Text>
+                        </TouchableOpacity>
+                    </View> */}
                 </View>
 
                 <View style={styles.cardContainer}>

@@ -45,7 +45,7 @@ export default function HomePage({ navigation }) {
       setRandomNo(health < 30 ? 'angry' : Math.floor(Math.random() * 14) + 1);
       setPosition(Math.floor(Math.random() * 3) + 1);
 
-      switch(true) {
+      switch (true) {
         case (health < 30):
           setMood('angry')
           break;
@@ -66,26 +66,23 @@ export default function HomePage({ navigation }) {
     React.useCallback(() => {
       let isActive = true;
 
-      const fetchInventory = async () => {
-        try {
-          const { data, error } = await supabaseClient
-            .from('inventory')
-            .select()
-          if (isActive) {
-            console.log('Inventory: ', data);
-            setInventory(data[0])
-          }
-        } catch (error) {
-          console.log(error.message);
-        }
-      };
-
       fetchInventory();
 
       return () => {
         isActive = false
       };
     }, []));
+
+  const fetchInventory = async () => {
+    const { data, error } = await supabaseClient
+      .from('inventory')
+      .select()
+    if (error) {
+      console.log(error.message);
+    } else {
+      setInventory(data[0])
+    }
+  };
 
 
   const healthCalculator = async (datetimeObj) => {
@@ -156,6 +153,7 @@ export default function HomePage({ navigation }) {
         console.log(data)
         setLastFed(new Date(data[0].last_fed))
         healthCalculator(new Date(data[0].last_fed));
+        fetchInventory()
       }
     }
   }
@@ -195,7 +193,7 @@ export default function HomePage({ navigation }) {
               <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                 Owned: {inventory.bread}
               </Text>
-              <TouchableOpacity style={inventory.bread == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('bread')} disabled={(inventory.bread == 0 ? true : false )}>
+              <TouchableOpacity style={inventory.bread == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('bread')} disabled={(inventory.bread == 0 ? true : false)}>
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   FEED
                 </Text>
@@ -210,7 +208,7 @@ export default function HomePage({ navigation }) {
               <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                 Owned: {inventory.bacon}
               </Text>
-              <TouchableOpacity style={inventory.bacon == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('bacon')} disabled={(inventory.bacon == 0 ? true : false )}>
+              <TouchableOpacity style={inventory.bacon == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('bacon')} disabled={(inventory.bacon == 0 ? true : false)}>
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   FEED
                 </Text>
@@ -225,7 +223,7 @@ export default function HomePage({ navigation }) {
               <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                 Owned: {inventory.egg}
               </Text>
-              <TouchableOpacity style={inventory.egg == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('egg')} disabled={(inventory.egg == 0 ? true : false )}>
+              <TouchableOpacity style={inventory.egg == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('egg')} disabled={(inventory.egg == 0 ? true : false)}>
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   FEED
                 </Text>
@@ -240,7 +238,7 @@ export default function HomePage({ navigation }) {
               <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                 Owned: {inventory.meatball}
               </Text>
-              <TouchableOpacity style={inventory.meatball == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('meatball')} disabled={(inventory.meatball == 0 ? true : false )}>
+              <TouchableOpacity style={inventory.meatball == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('meatball')} disabled={(inventory.meatball == 0 ? true : false)}>
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   FEED
                 </Text>
@@ -255,7 +253,7 @@ export default function HomePage({ navigation }) {
               <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                 Owned: {inventory.sushi}
               </Text>
-              <TouchableOpacity style={inventory.sushi == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('sushi')} disabled={(inventory.sushi == 0 ? true : false )}>
+              <TouchableOpacity style={inventory.sushi == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('sushi')} disabled={(inventory.sushi == 0 ? true : false)}>
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   FEED
                 </Text>
@@ -270,7 +268,7 @@ export default function HomePage({ navigation }) {
               <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                 Owned: {inventory.salmon}
               </Text>
-              <TouchableOpacity style={inventory.salmon == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('salmon')} disabled={(inventory.salmon == 0 ? true : false )}>
+              <TouchableOpacity style={inventory.salmon == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('salmon')} disabled={(inventory.salmon == 0 ? true : false)}>
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   FEED
                 </Text>
@@ -285,7 +283,7 @@ export default function HomePage({ navigation }) {
               <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                 Owned: {inventory.steak}
               </Text>
-              <TouchableOpacity style={inventory.steak == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('steak')} disabled={(inventory.steak == 0 ? true : false )}>
+              <TouchableOpacity style={inventory.steak == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('steak')} disabled={(inventory.steak == 0 ? true : false)}>
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   FEED
                 </Text>
@@ -300,7 +298,7 @@ export default function HomePage({ navigation }) {
               <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                 Owned: {inventory.chicken}
               </Text>
-              <TouchableOpacity style={inventory.chicken == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('chicken')} disabled={(inventory.chicken == 0 ? true : false )}>
+              <TouchableOpacity style={inventory.chicken == 0 ? styles.buttonLocked : styles.button} onPress={() => feed('chicken')} disabled={(inventory.chicken == 0 ? true : false)}>
                 <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                   FEED
                 </Text>
@@ -327,13 +325,24 @@ export default function HomePage({ navigation }) {
 
       <ScrollView style={{ flex: 1 }} horizontal>
         <ImageBackground source={require('../assets/backgrounds/roomday.png')} style={{ height: '100%', width: 800 }}>
-        <Image
-            source={selectedCompanion != '' ? ImageDirectory[mood][mood == 'tired' ? 1 : Math.floor(Math.random() * 4) + 1] : ImageDirectory['']} 
+
+
+          <View style={styles.companionImage[position]}>
+          <Image
+            source={selectedCompanion != '' ? ImageDirectory[mood][mood == 'tired' ? 1 : Math.floor(Math.random() * 4) + 1] : ImageDirectory['']} />
+          <Image
+            source={selectedCompanion != '' ? ImageDirectory[selectedCompanion][randomNo] : ImageDirectory['']} />
+          </View>
+
+          {/* <Image
+            source={selectedCompanion != '' ? ImageDirectory[mood][mood == 'tired' ? 1 : Math.floor(Math.random() * 4) + 1] : ImageDirectory['']}
             style={selectedCompanion != '' ? styles.companionMood[position] : styles.companionImage[position]} />
           <Image
             source={selectedCompanion != '' ? ImageDirectory[selectedCompanion][randomNo] : ImageDirectory['']}
             // source={ImageDirectory['']} //FOR TESTING PURPOSES -> NEW USERS WHEN THEY DONT HAVE A SELECTED COMPANION
-            style={styles.companionImage[position]} />
+            style={styles.companionImage[position]} /> */}
+
+
         </ImageBackground>
       </ScrollView>
 
@@ -422,32 +431,6 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 100,
       right: 200
-    }
-  },
-  companionMood: {
-    '1': {
-      resizeMode: 'contain',
-      position: 'absolute',
-      bottom: 225,
-      left: 150,
-      height: 50,
-      width: 50
-    },
-    '2': {
-      resizeMode: 'contain',
-      position: 'absolute',
-      bottom: 390,
-      left: 150,
-      height: 50,
-      width: 50
-    },
-    '3': {
-      resizeMode: 'contain',
-      position: 'absolute',
-      bottom: 225,
-      right: 250,
-      height: 50,
-      width: 50
     }
   },
   box: {
