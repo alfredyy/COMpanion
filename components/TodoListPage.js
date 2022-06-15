@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
+
 import CalendarStrip from 'react-native-calendar-strip';
 import Menu, {
   MenuProvider,
@@ -17,6 +18,7 @@ import Menu, {
 } from 'react-native-popup-menu';
 
 import { SimpleLineIcons } from '@expo/vector-icons'; 
+import { color } from '@chakra-ui/react';
   
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
@@ -38,22 +40,26 @@ export default function TodoList() {
   //   React.useCallback(() => {
   //     let isActive = true;
 
-      // const fetchTodosday = async (selecteddate) => {
-      //   var nextdate = new Date(selecteddate)
-      //   nextdate.setHours(23,59,0,0)
-      //     const { data, error } = await supabaseClient
-      //       .from('todos')
-      //       .select('*')
-      //       .gte('datetime', selecteddate.toISOString())
-      //       .lte('datetime', nextdate.toISOString())
-      //       .order('datetime', { ascending: true });
-      //       if (error) {
-      //         console.log(error);
-      //     } else {
-      //       console.log('Todos: ', data);
-      //       setTodos(data);
-      //     }
-      // }
+      const fetchTodosday = async (selecteddate) => {
+        var nowdate = new Date((new Date(selecteddate)).getTime() - 60 * 60 * 12 * 1000);
+        // var nextdate = selecteddate.setHours(selecteddate.getHours() + 24)
+        var nextdate = new Date(nowdate.getTime() + 60 * 60 * 12 * 1000);
+        nextdate.setHours(23,59,0,0)
+          const { data, error } = await supabaseClient
+            .from('todos')
+            .select('*')
+            .gte('datetime', nowdate.toISOString())
+            .lte('datetime', nextdate.toISOString())
+            .order('datetime', { ascending: true });
+            if (error) {
+              console.log(error);
+          } else {
+            console.log('Todos: ', data);
+            console.log('datetime: ', nowdate.toISOString())
+            console.log('datetime: ', nextdate.toISOString())
+            setTodos(data);
+          }
+      }
 
     //   fetchTodos();
 
@@ -140,6 +146,8 @@ export default function TodoList() {
           } else {
             console.log('Todos: ', data);
             setTodos(data);
+            console.log('start: ', start.toISOString())
+            console.log('end :', nextdate.toISOString())
             // dDates = [];
             // data.forEach(x => {
             //   console.log(x);
@@ -351,6 +359,30 @@ export default function TodoList() {
     };
   
 
+    const getDayname = (x) => {
+      const dayNo = x.getDay()
+      if (dayNo == 0) {
+        return 'Sun'
+      }
+      if (dayNo == 1) {
+        return 'Mon'
+      }
+      if (dayNo == 2) {
+        return 'Tue'
+      }
+      if (dayNo == 3) {
+        return 'Wed'
+      }
+      if (dayNo == 4) {
+        return 'Thur'
+      }
+      if (dayNo == 5) {
+        return 'Fri'
+      }
+      if (dayNo == 6) {
+        return 'Sat'
+      }
+    }
 
   
 
@@ -506,9 +538,9 @@ export default function TodoList() {
 
          <View style={styles.container}>
           <CalendarStrip
-            //scrollable
+            scrollable
             //markedDates={markedDatesArrayy}
-            onWeekChanged={(start, end) => fetchTodosweek(start, end)}
+            onWeekScrollEnd={(start, end) => fetchTodosweek(start, end)}
             style={{height:80, paddingTop: 10, paddingBottom: 10, marginBottom: 10}}
             calendarColor={'#fff'}
             // calendarHeaderStyle={{color: 'white'}}
@@ -519,7 +551,7 @@ export default function TodoList() {
             daySelectionAnimation={{type: 'border', duration: 10, borderWidth: 1, borderHighlightColor: '#ec2929'}}
             highlightDateNumberStyle={{color: '#ec2929'}}
             highlightDateNameStyle={{color: '#ec2929'}}
-            //onDateSelected={selectedDate => {fetchTodosday(selectedDate)}}
+            onDateSelected={selectedDate => fetchTodosday(selectedDate)}
           />
           <View style={{alignItems:'center'}}>
            <FlatList
@@ -528,40 +560,44 @@ export default function TodoList() {
             keyExtractor={item => `${item.id}`}
             renderItem={({ item: todo }) => (
 
+<View style={styles.row}>
+              <View style={styles.time}>
+              <Text style={[styles.mtAutoTime]}>
+                {(new Date(todo.datetime)).getDate()}
+                {getDayname(new Date(todo.datetime))}
+              </Text>
+              <Text style={[styles.mtAutoTime]}>
+                {timeToString(todo.datetime)}
+              </Text>
+              </View>
+
+
             <View style={[styles.dFlex]}>
 
-                    <CheckBox
+                
+                  <CheckBox
                     checked={todo.completed}
                     onPress={() => toggleCompleted(todo.id, todo.completed, todo.user_id)}
-                    />
-
-              
-                <View>
-                  <Text style={[styles.mtAutoTime]}>
-                    {timeToStringg(todo.datetime)}
-                  </Text>
-                  <Text style={[styles.mtAutoTime]}>
-                    {timeToString(todo.datetime)}
-                  </Text>
+                  />
                   <Text style={[styles.mtAutoName]}>
                     {todo.item_name}
                   </Text>
-                </View>
                 
 
                 <Menu onSelect={value => (value == 1) ? handlePress(todo) : deleteTodo(todo.id)}>
                   <MenuTrigger>
                   <SimpleLineIcons name="options-vertical" size={24} color="black" />
                   </MenuTrigger>
-                  <MenuOptions>
+                  <MenuOptions optionsContainerStyle={{justifyContent:'space-between', paddingBottom:8, width:100,height:100}}>
                   <MenuOption value={1} text='Edit' />
-                  <MenuOption value={2}>
-                  <Text style={{color: 'red'}}>Delete</Text>
+                  <MenuOption text='Delete'>
+                  {/* <Text style={{color: 'red'}}>Delete</Text> */}
                   </MenuOption>
                   </MenuOptions>
                 </Menu>
 
 
+              </View>
               </View>
             )}
           />
@@ -572,7 +608,10 @@ export default function TodoList() {
 
     </TouchableWithoutFeedback>
     </MenuProvider>
-  );
+
+   );
+
+
 }
 
 const styles = StyleSheet.create({
@@ -582,27 +621,45 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f9f9f9',
   },
+  row: {
+    flexDirection: 'row',
+  },
   dFlex: {
     flexDirection: 'row',
     backgroundColor: "#ffffff",
-    width: 350,
-    borderRadius: 20,
-    borderColor: 'black',
-    height: 100,
+    width: 280,
+    borderRadius: 80,
+    borderColor: '#ec2929',
+    borderWidth: 1,
+    height: 60,
     marginBottom: 20,
     justifyContent: "flex-start",
     alignItems: 'center',
+  },
+  time: {
+    //flexDirection: 'row',
+    //borderWidth: 2,
+    //borderColor: 'black',
+    width: 80,
+    marginLeft: 0,
+    marginRight: 10,
+    marginTop: 7,
+    paddingLeft: 0,
+    
   },
   mtAutoTime: {
     width: 230,
     paddingRight: 15,
     margin: 2,
+    //fontWeight: 'bold',
+    color: '#A4A1A1' 
+  
   },
   mtAutoName: {
-    width: 230,
+    width: 170,
     paddingRight: 15,
     margin: 2,
-    fontSize: 18
+    fontSize: 15
   },
   modalView: {
     margin: 20,
