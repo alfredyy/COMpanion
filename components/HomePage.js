@@ -42,20 +42,11 @@ export default function HomePage({ navigation }) {
       };
 
       fetchData();
-      setRandomNo(health < 30 ? 'angry' : Math.floor(Math.random() * 14) + 1);
+
+      setRandomNo(Math.floor(Math.random() * 14) + 1);
       setPosition(Math.floor(Math.random() * 3) + 1);
 
-      switch (true) {
-        case (health < 30):
-          setMood('angry')
-          break;
-        case (randomNo <= 2):
-          setMood('tired')
-          break;
-        case (randomNo > 2):
-          setMood('happy')
-          break;
-      }
+      console.log(mood)
 
       return () => {
         isActive = false
@@ -89,7 +80,24 @@ export default function HomePage({ navigation }) {
     var today = new Date();
     var diffMs = (today - datetimeObj); // difference in milliseconds
     var diffMins = Math.floor((diffMs / 1000) / 60) // difference in minutes
-    setHealth(Math.max(100 - Math.floor(diffMins / 30), 0)) //Health drops by 1 point every 30 mins
+    var calculated = 100 - Math.floor(diffMins / 30)
+    setHealth(Math.max(calculated, 0)) //Health drops by 1 point every 30 mins
+
+    //Ensures that if health fall belows 0, last_fed is updated to exactly 100 * 31 minutes prior to current time,
+    // so that when companion is fed, the health will increase.
+    if (calculated < 0) {
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .update({ last_fed: moment().subtract(100 * 30, 'm') })
+        .eq('id', id)
+      if (error) {
+        console.log(error);
+      }
+      setMood('angry')
+    } else if (calculated >= 30) {
+      setMood('happy')
+    }
+
   }
 
   const feed = async (item) => {
@@ -329,7 +337,7 @@ export default function HomePage({ navigation }) {
 
           <View style={styles.companionImage[position]}>
           <Image
-            source={selectedCompanion != '' ? ImageDirectory[mood][mood == 'tired' ? 1 : Math.floor(Math.random() * 4) + 1] : ImageDirectory['']} />
+            source={selectedCompanion != '' ? ImageDirectory[mood][Math.floor(Math.random() * 4) + 1] : ImageDirectory['']} />
           <Image
             source={selectedCompanion != '' ? ImageDirectory[selectedCompanion][randomNo] : ImageDirectory['']} />
           </View>
