@@ -374,7 +374,7 @@ export default function TodoList() {
         return 'Wed'
       }
       if (dayNo == 4) {
-        return 'Thur'
+        return 'Thu'
       }
       if (dayNo == 5) {
         return 'Fri'
@@ -560,16 +560,21 @@ export default function TodoList() {
             keyExtractor={item => `${item.id}`}
             renderItem={({ item: todo }) => (
 
-<View style={styles.row}>
-              <View style={styles.time}>
+          <View style={styles.row}>
+             <View style={styles.time}>
+              <View style={{flexDirection: 'row'}}>
               <Text style={[styles.mtAutoTime]}>
                 {(new Date(todo.datetime)).getDate()}
+                </Text>
+                <Text style={{color: '#A4A1A1', marginTop: 3}}>
                 {getDayname(new Date(todo.datetime))}
               </Text>
-              <Text style={[styles.mtAutoTime]}>
+              </View>
+
+              <Text style={[styles.mtAutoTime1]}>
                 {timeToString(todo.datetime)}
               </Text>
-              </View>
+            </View> 
 
 
             <View style={[styles.dFlex]}>
@@ -598,7 +603,7 @@ export default function TodoList() {
 
 
               </View>
-              </View>
+          </View>
             )}
           />
           </View>
@@ -637,9 +642,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   time: {
-    //flexDirection: 'row',
-    //borderWidth: 2,
-    //borderColor: 'black',
     width: 80,
     marginLeft: 0,
     marginRight: 10,
@@ -648,11 +650,17 @@ const styles = StyleSheet.create({
     
   },
   mtAutoTime: {
-    width: 230,
-    paddingRight: 15,
-    margin: 2,
-    //fontWeight: 'bold',
-    color: '#A4A1A1' 
+    width: 20,
+    color: '#A4A1A1', 
+    marginLeft: 10,
+    marginTop: 3
+  
+  },
+  mtAutoTime1: {
+    width: 60,
+    color: '#A4A1A1', 
+    marginLeft: 10,
+
   
   },
   mtAutoName: {
