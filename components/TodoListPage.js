@@ -591,7 +591,7 @@ export default function TodoList() {
 
                 <Menu onSelect={value => (value == 1) ? handlePress(todo) : deleteTodo(todo.id)}>
                   <MenuTrigger>
-                  <SimpleLineIcons name="options-vertical" size={24} color="black" />
+                  <SimpleLineIcons name="options-vertical" size={24} color="white" />
                   </MenuTrigger>
                   <MenuOptions optionsContainerStyle={{justifyContent:'space-between', paddingBottom:8, width:100,height:100}}>
                   <MenuOption value={1} text='Edit' />
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
   },
   dFlex: {
     flexDirection: 'row',
-    backgroundColor: "#ffffff",
+    backgroundColor: "#ec2929",
     width: 280,
     borderRadius: 80,
     borderColor: '#ec2929',
@@ -667,7 +667,8 @@ const styles = StyleSheet.create({
     width: 170,
     paddingRight: 15,
     margin: 2,
-    fontSize: 15
+    fontSize: 15, 
+    color: 'white'
   },
   modalView: {
     margin: 20,
