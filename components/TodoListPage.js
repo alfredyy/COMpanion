@@ -37,9 +37,6 @@ export default function TodoList() {
   let loading = false;
   //const [markedDatesArray, setMarkedDatesArray] = useState({});
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     let isActive = true;
 
       const fetchTodosday = async (selecteddate) => {
         var nowdate = new Date((new Date(selecteddate)).getTime() - 60 * 60 * 12 * 1000);
@@ -62,12 +59,6 @@ export default function TodoList() {
           }
       }
 
-    //   fetchTodos();
-
-    //   return () => {
-    //     isActive = false
-    //   };
-    // }, []));
 
     let dDates = [];
     let markedDatesArrayy = [];
@@ -329,29 +320,7 @@ export default function TodoList() {
     return date.toISOString().split('T')[0];
   };
 
-
-    // const markedDatesArray = [
-    //   {
-    //     date: "2022-06-11",
-    //     dots: [
-    //       {
-    //         color: "red",
-    //         selectedColor: "red"
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     date: "2022-06-12",
-    //     dots: [
-    //       {
-    //         color: "red",
-    //         selectedColor: "red"
-    //       }
-    //     ]
-    //   }
-    // ];
   
-
     const markedDatesFunc = () => {
         markedDatesArrayy = [];
         dDates.forEach(x => {
@@ -599,15 +568,15 @@ export default function TodoList() {
             //markedDates={markedDatesArrayy}
             onWeekChanged={(start, end) => fetchTodosweek(start, end)}
             style={{height:80, paddingTop: 10, paddingBottom: 10, marginBottom: 10}}
-            calendarColor={'#fff'}
-            // calendarHeaderStyle={{color: 'white'}}
-            // dateNumberStyle={{color: 'white'}}
-            // dateNameStyle={{color: 'white'}}
+            calendarColor={'#ead4aa'}
+            calendarHeaderStyle={{color: '#ec2929'}}
+            dateNumberStyle={{color: '#ec2929'}}
+            dateNameStyle={{color: '#ec2929'}}
             iconContainer={{flex: 0.1}}
             selectedDate={new Date()}
             daySelectionAnimation={{type: 'border', duration: 10, borderWidth: 1, borderHighlightColor: '#ec2929'}}
-            highlightDateNumberStyle={{color: '#ec2929'}}
-            highlightDateNameStyle={{color: '#ec2929'}}
+            highlightDateNumberStyle={{color: '#fff'}}
+            highlightDateNameStyle={{color: '#fff'}}
             onDateSelected={selectedDate => fetchTodosday(selectedDate)}
           />
           <View style={{alignItems:'center'}}>
@@ -706,8 +675,6 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 10,
     marginTop: 7,
-    paddingLeft: 0,
-    
   },
   mtAutoTime: {
     width: 20,
