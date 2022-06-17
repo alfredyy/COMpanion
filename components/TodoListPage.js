@@ -25,6 +25,7 @@ export default function TodoList() {
   const[todoss, setTodoss] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible1, setModalVisible1] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [datetime, setDateTime] = useState(new Date());
@@ -226,6 +227,19 @@ export default function TodoList() {
     setId(todo.id)
     setDateTime(new Date(todo.datetime))
     setModalVisible(true)
+  };
+
+  const handlePressEdit = async (todo) => {
+    setModalVisible(true)
+  };
+
+
+  const handlePress1 = async (todo) => {
+    setName(todo.item_name)
+    setDesc(todo.description)
+    setId(todo.id)
+    setDateTime(new Date(todo.datetime))
+    setModalVisible2(true)
   };
 
   const showDate = () => {
@@ -487,7 +501,7 @@ export default function TodoList() {
           transparent={true}
           visible={modalVisible1}
           onRequestClose={() => {
-            setModalVisible(!modalVisible1);
+            setModalVisible1(!modalVisible1);
           }}
         >
           <TouchableWithoutFeedback onPress={() => {
@@ -524,6 +538,49 @@ export default function TodoList() {
           </TouchableWithoutFeedback>
         </Modal>
 
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible2}
+          onRequestClose={() => {
+            setModalVisible2(!modalVisible2);
+          }}
+        >
+          <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+          }}>
+            <View style={styles.modalView}>
+
+              <View style={styles.details}>
+                <Icon name='info' type='feather' color='#fff' />
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
+                  Task Options
+                </Text>
+              </View>
+
+                <Pressable
+                  style={[styles.primaryButton1]}
+                  onPress={handlePressEdit}
+                >
+                  <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    EDIT
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.secondaryButton1]}
+                  onPress={() => setModalVisible2(!modalVisible2)}
+                >
+                  <Text style={{ color: '#ec2929', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    CLOSE
+                  </Text>
+                </Pressable>
+
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+
 
       <Header
           statusBarProps={{ backgroundColor: '#ec2929' }}
@@ -538,9 +595,9 @@ export default function TodoList() {
 
          <View style={styles.container}>
           <CalendarStrip
-            scrollable
+            //scrollable
             //markedDates={markedDatesArrayy}
-            onWeekScrollEnd={(start, end) => fetchTodosweek(start, end)}
+            onWeekChanged={(start, end) => fetchTodosweek(start, end)}
             style={{height:80, paddingTop: 10, paddingBottom: 10, marginBottom: 10}}
             calendarColor={'#fff'}
             // calendarHeaderStyle={{color: 'white'}}
@@ -589,18 +646,21 @@ export default function TodoList() {
                   </Text>
                 
 
-                <Menu onSelect={value => (value == 1) ? handlePress(todo) : deleteTodo(todo.id)}>
+                {/* <Menu onSelect={value => (value == 1) ? handlePress(todo) : deleteTodo(todo.id)}>
                   <MenuTrigger>
                   <SimpleLineIcons name="options-vertical" size={24} color="white" />
                   </MenuTrigger>
                   <MenuOptions optionsContainerStyle={{justifyContent:'space-between', paddingBottom:8, width:100,height:100}}>
                   <MenuOption value={1} text='Edit' />
                   <MenuOption text='Delete'>
-                  {/* <Text style={{color: 'red'}}>Delete</Text> */}
+
                   </MenuOption>
                   </MenuOptions>
-                </Menu>
-
+                </Menu> */}
+                
+                <Pressable onPress={() => handlePress1(todo)}>
+                <SimpleLineIcons name="options-vertical" size={24} color="white" />
+                </Pressable>
 
               </View>
           </View>
