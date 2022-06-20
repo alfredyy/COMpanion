@@ -573,9 +573,9 @@ export default function TodoList() {
 
          <View style={styles.container}>
           <CalendarStrip
-            //scrollable
+            scrollable
             //markedDates={markedDatesArrayy}
-            onWeekChanged={(start, end) => fetchTodosweek(start, end)}
+            onWeekScrollEnd={(start, end) => fetchTodosweek(start, end)}
             style={{height:80, paddingTop: 10, paddingBottom: 10, marginBottom: 10}}
             calendarColor={'#fff'}
             calendarHeaderStyle={{color: '#ec2929'}}
