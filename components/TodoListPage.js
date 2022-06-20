@@ -24,7 +24,7 @@ export default function TodoList() {
   const [todos, setTodos] = useState([]);
   const[todoss, setTodoss] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalVisible1, setModalVisible1] = useState(false);
+  //const [modalVisible1, setModalVisible1] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
@@ -179,7 +179,7 @@ export default function TodoList() {
         text1: "Well done, you've just earned 10 coins!",
       })
       setId(id)
-      setModalVisible1(true)
+      //setModalVisible1(true)
 
     }
    }
@@ -191,11 +191,11 @@ export default function TodoList() {
      .eq('id', ID)
    if (error2) {
      console.log(error);
-   } else {
-     Toast.show({
-       type: 'success',
-       text1: "10 coins deducted!",
-     })
+  //  } else {
+  //    Toast.show({
+  //      type: 'success',
+  //      text1: "10 coins deducted!",
+  //    })
 
    }
   }
@@ -465,7 +465,7 @@ export default function TodoList() {
           </TouchableWithoutFeedback>
         </Modal>
 
-        <Modal
+        {/* <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible1}
@@ -505,7 +505,7 @@ export default function TodoList() {
 
             </View>
           </TouchableWithoutFeedback>
-        </Modal>
+        </Modal> */}
 
         <Modal
           animationType="slide"
@@ -533,6 +533,15 @@ export default function TodoList() {
                 >
                   <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
                     EDIT
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.primaryButton1]}
+                  onPress={() => deleteTodo(id)}
+                >
+                  <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    REMOVE
                   </Text>
                 </Pressable>
 
@@ -568,15 +577,15 @@ export default function TodoList() {
             //markedDates={markedDatesArrayy}
             onWeekChanged={(start, end) => fetchTodosweek(start, end)}
             style={{height:80, paddingTop: 10, paddingBottom: 10, marginBottom: 10}}
-            calendarColor={'#ead4aa'}
+            calendarColor={'#fff'}
             calendarHeaderStyle={{color: '#ec2929'}}
             dateNumberStyle={{color: '#ec2929'}}
             dateNameStyle={{color: '#ec2929'}}
             iconContainer={{flex: 0.1}}
             selectedDate={new Date()}
             daySelectionAnimation={{type: 'border', duration: 10, borderWidth: 1, borderHighlightColor: '#ec2929'}}
-            highlightDateNumberStyle={{color: '#fff'}}
-            highlightDateNameStyle={{color: '#fff'}}
+            highlightDateNumberStyle={{color: '#ec2929'}}
+            highlightDateNameStyle={{color: '#ec2929'}}
             onDateSelected={selectedDate => fetchTodosday(selectedDate)}
           />
           <View style={{alignItems:'center'}}>
@@ -628,7 +637,7 @@ export default function TodoList() {
                 </Menu> */}
                 
                 <Pressable onPress={() => handlePress1(todo)}>
-                <SimpleLineIcons name="options-vertical" size={24} color="white" />
+                <SimpleLineIcons name="options-vertical" size={24} color="#ec2929" />
                 </Pressable>
 
               </View>
@@ -660,7 +669,7 @@ const styles = StyleSheet.create({
   },
   dFlex: {
     flexDirection: 'row',
-    backgroundColor: "#ec2929",
+    backgroundColor: "#fff",
     width: 280,
     borderRadius: 80,
     borderColor: '#ec2929',
@@ -695,7 +704,7 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     margin: 2,
     fontSize: 15, 
-    color: 'white'
+    color: '#ec2929'
   },
   modalView: {
     margin: 20,
@@ -739,7 +748,8 @@ const styles = StyleSheet.create({
     height: 45,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 35
+    marginLeft: 35,
+    marginTop: 20
     
   },
   secondaryButton1: {
