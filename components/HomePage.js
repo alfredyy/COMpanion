@@ -14,7 +14,6 @@ export default function HomePage({ navigation }) {
   const [randomNo, setRandomNo] = useState(Math.floor(Math.random() * 14) + 1)
   const [position, setPosition] = useState(Math.floor(Math.random() * 3) + 1)
   const [modalVisible, setModalVisible] = useState(false);
-  const [lastFed, setLastFed] = useState(new Date())
   const [health, setHealth] = useState(100)
   const [inventory, setInventory] = useState({ "bacon": 0, "bread": 0, "chicken": 0, "egg": 0, "meatball": 0, "salmon": 0, "steak": 0, "sushi": 0 })
   const [mood, setMood] = useState('happy')
@@ -33,7 +32,6 @@ export default function HomePage({ navigation }) {
             setID(data[0].id)
             setSelectedCompanion(data[0].selected_companion);
             setCurrency(data[0].currency)
-            setLastFed(new Date(data[0].last_fed))
             healthCalculator(new Date(data[0].last_fed))
           }
         } catch (error) {
@@ -42,8 +40,6 @@ export default function HomePage({ navigation }) {
       };
 
       fetchData();
-
-      setRandomNo(Math.floor(Math.random() * 14) + 1);
       setPosition(Math.floor(Math.random() * 3) + 1);
 
       console.log(mood)
@@ -93,9 +89,14 @@ export default function HomePage({ navigation }) {
       if (error) {
         console.log(error);
       }
+    }
+
+    if (calculated < 30) {
       setMood('angry')
+      setRandomNo('angry')
     } else if (calculated >= 30) {
       setMood('happy')
+      setRandomNo(Math.floor(Math.random() * 14) + 1);
     }
 
   }
@@ -159,7 +160,6 @@ export default function HomePage({ navigation }) {
         console.log(error);
       } else {
         console.log(data)
-        setLastFed(new Date(data[0].last_fed))
         healthCalculator(new Date(data[0].last_fed));
         fetchInventory()
       }
