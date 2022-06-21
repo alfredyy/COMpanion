@@ -63,35 +63,35 @@ export default function TodoList() {
     let dDates = [];
     let markedDatesArrayy = [];
 
-    // useFocusEffect(
-    //   React.useCallback(() => {
-    //   let isActive = true;
+    useFocusEffect(
+      React.useCallback(() => {
+      let isActive = true;
 
-    //   const fetchTodos = async () => {
-    //       const { data, error } = await supabaseClient
-    //         .from('todos')
-    //         .select('*')
-    //         .order('datetime', { ascending: true });
-    //         if (error) {
-    //           console.log(error);
-    //       } else {
-    //         console.log('Todos: ', data);
-    //         setTodoss(data);
-    //         dDates = [];
-    //         data.forEach(x => {
-    //           console.log(x);
-    //           dDates.push(timeToStringg(x.datetime));
-    //         })
-    //         console.log('dDates: ', dDates);
-    //       }
-    //   }
+      const fetchTodos = async () => {
+          const { data, error } = await supabaseClient
+            .from('todos')
+            .select('*')
+            .order('datetime', { ascending: true });
+            if (error) {
+              console.log(error);
+          } else {
+            console.log('Todos: ', data);
+            setTodoss(data);
+            dDates = [];
+            data.forEach(x => {
+              console.log(x);
+              dDates.push(timeToStringg(x.datetime));
+            })
+            console.log('dDates: ', dDates);
+          }
+      }
 
-    //   fetchTodos();
+      fetchTodos();
 
-    //   return () => {
-    //     isActive = false
-    //   };
-    // }, []));
+      return () => {
+        isActive = false
+      };
+    }, []));
 
 
     useFocusEffect(
@@ -120,7 +120,6 @@ export default function TodoList() {
           };
       }, []));
 
-    
 
 
 
@@ -209,6 +208,7 @@ export default function TodoList() {
       console.log('error', error);
     } else {
       setTodos(todos.filter(x => x.id !== Number(id)));
+      setModalVisible2(!modalVisible2);
     }
   };
 
@@ -573,9 +573,10 @@ export default function TodoList() {
 
          <View style={styles.container}>
           <CalendarStrip
-            scrollable
+            //scrollable
             //markedDates={markedDatesArrayy}
-            onWeekScrollEnd={(start, end) => fetchTodosweek(start, end)}
+            //onWeekScrollEnd={(start, end) => fetchTodosweek(start, end)}
+            onWeekChanged={(start, end) => fetchTodosweek(start, end)}
             style={{height:80, paddingTop: 10, paddingBottom: 10, marginBottom: 10}}
             calendarColor={'#fff'}
             calendarHeaderStyle={{color: '#ec2929'}}
