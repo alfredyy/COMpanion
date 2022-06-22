@@ -38,6 +38,7 @@ export default function TodoList() {
   //const [markedDatesArray, setMarkedDatesArray] = useState({});
 
 
+  //Fetch tasks on selected day when clicked
       const fetchTodosday = async (selecteddate) => {
         var nowdate = new Date((new Date(selecteddate)).getTime() - 60 * 60 * 12 * 1000);
         // var nextdate = selecteddate.setHours(selecteddate.getHours() + 24)
@@ -63,57 +64,65 @@ export default function TodoList() {
     let dDates = [];
     let markedDatesArrayy = [];
 
-    useFocusEffect(
-      React.useCallback(() => {
-      let isActive = true;
+    // useFocusEffect(
+    //   React.useCallback(() => {
+    //   let isActive = true;
 
-      const fetchTodos = async () => {
-          const { data, error } = await supabaseClient
-            .from('todos')
-            .select('*')
-            .order('datetime', { ascending: true });
-            if (error) {
-              console.log(error);
-          } else {
-            console.log('Todos: ', data);
-            setTodoss(data);
-            dDates = [];
-            data.forEach(x => {
-              console.log(x);
-              dDates.push(timeToStringg(x.datetime));
-            })
-            console.log('dDates: ', dDates);
-          }
-      }
+    //   const fetchTodos = async () => {
+    //       const { data, error } = await supabaseClient
+    //         .from('todos')
+    //         .select('*')
+    //         .order('datetime', { ascending: true });
+    //         if (error) {
+    //           console.log(error);
+    //       } else {
+    //         console.log('Todos: ', data);
+    //         setTodoss(data);
+    //         dDates = [];
+    //         data.forEach(x => {
+    //           // console.log(x);
+    //           dDates.push(timeToStringg(x.datetime));
+    //         })
+    //         console.log('dDates: ', dDates);
+    //       }
+    //   }
 
-      fetchTodos();
+    //   fetchTodos();
 
-      return () => {
-        isActive = false
-      };
-    }, []));
+    //   return () => {
+    //     isActive = false
+    //   };
+    // }, []));
 
 
+
+
+    //Fetching data on 
     useFocusEffect(
       React.useCallback(() => {
           let isActive = true;
 
-          const fetchData = async () => {
-              try {
-                  const { data, error } = await supabaseClient
-                      .from('profiles')
-                      .select('id, currency')
-                  if (isActive) {
-                      console.log('data: ', data[0])
-                      setID(data[0].id)
-                      setCurrency(data[0].currency);
-                  }
-              } catch (error) {
-                  console.log(error.message);
+          const fetchTodosday = async () => {
+            var nowdate = new Date((new Date()).getTime() - 60 * 60 * 12 * 1000);
+            var nextdate = new Date(nowdate.getTime() + 60 * 60 * 12 * 1000);
+            nextdate.setHours(23,59,0,0)
+              const { data, error } = await supabaseClient
+                .from('todos')
+                .select('*')
+                .gte('datetime', nowdate.toISOString())
+                .lte('datetime', nextdate.toISOString())
+                .order('datetime', { ascending: true });
+                if (error) {
+                  console.log(error);
+              } else {
+                console.log('Todos: ', data);
+                console.log('datetime: ', nowdate.toISOString())
+                console.log('datetime: ', nextdate.toISOString())
+                setTodos(data);
               }
-          };
+          }
 
-          fetchData();
+          fetchTodosday();
 
           return () => {
               isActive = false
@@ -121,8 +130,35 @@ export default function TodoList() {
       }, []));
 
 
+      //Fetching data on number of coins user has
+      useFocusEffect(
+        React.useCallback(() => {
+            let isActive = true;
+  
+            const fetchData = async () => {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('profiles')
+                        .select('id, currency')
+                    if (isActive) {
+                        console.log('data: ', data[0])
+                        setID(data[0].id)
+                        setCurrency(data[0].currency);
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                }
+            };
+  
+            fetchData();
+  
+            return () => {
+                isActive = false
+            };
+        }, []));
 
 
+    //Fetching data on tasks for selected week when clicked
     const fetchTodosweek = async (start, end) => {
       var nextdate = new Date(end);
       nextdate.setHours(23,59,0,0);
@@ -135,7 +171,7 @@ export default function TodoList() {
           if (error) {
             console.log(error)
           } else {
-            console.log('Todos: ', data);
+            console.log('Todoss: ', data);
             setTodos(data);
             console.log('start: ', start.toISOString())
             console.log('end :', nextdate.toISOString())
