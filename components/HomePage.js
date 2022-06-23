@@ -8,12 +8,13 @@ import Toast from 'react-native-toast-message';
 import moment from 'moment';
 
 export default function HomePage({ navigation }) {
-  const [id, setID] = useState('')
+  const [id, setID] = useState(null)
   const [selectedCompanion, setSelectedCompanion] = useState('')
   const [currency, setCurrency] = useState(0)
   const [randomNo, setRandomNo] = useState(Math.floor(Math.random() * 14) + 1)
   const [position, setPosition] = useState(Math.floor(Math.random() * 3) + 1)
   const [modalVisible, setModalVisible] = useState(false);
+  const [lastFed, setLastFed] = useState(new Date())
   const [health, setHealth] = useState(100)
   const [inventory, setInventory] = useState({ "bacon": 0, "bread": 0, "chicken": 0, "egg": 0, "meatball": 0, "salmon": 0, "steak": 0, "sushi": 0 })
   const [mood, setMood] = useState('happy')
@@ -33,6 +34,7 @@ export default function HomePage({ navigation }) {
             setSelectedCompanion(data[0].selected_companion);
             setCurrency(data[0].currency)
             healthCalculator(new Date(data[0].last_fed))
+            setLastFed(new Date(data[0].last_fed))
           }
         } catch (error) {
           console.log(error.message);
@@ -41,19 +43,9 @@ export default function HomePage({ navigation }) {
 
       fetchData();
       setPosition(Math.floor(Math.random() * 3) + 1);
+      fetchInventory();
 
       console.log(mood)
-
-      return () => {
-        isActive = false
-      };
-    }, []));
-
-  useFocusEffect(
-    React.useCallback(() => {
-      let isActive = true;
-
-      fetchInventory();
 
       return () => {
         isActive = false
@@ -160,6 +152,7 @@ export default function HomePage({ navigation }) {
         console.log(error);
       } else {
         console.log(data)
+        setLastFed(new Date(data[0].last_fed))
         healthCalculator(new Date(data[0].last_fed));
         fetchInventory()
       }

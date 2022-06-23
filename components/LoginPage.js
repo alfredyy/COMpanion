@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView, Image } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
-import { Icon } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
 
 export default function LoginPage({ navigation }) {
@@ -38,11 +37,9 @@ export default function LoginPage({ navigation }) {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-      <Icon name='smiley' type='octicon' color='#fff' size={50} />
-
-      <Text style={{ fontSize: 32, color: 'white', fontFamily: 'sans-serif', fontWeight: 'bold', marginTop: 10, marginBottom: 20 }}>
-        COMpanion
-      </Text>
+      <View>
+        <Image style={styles.logo} source={require('../assets/logo2.png')} />
+      </View>
 
       <View style={styles.rectangleLogin}>
 
@@ -63,6 +60,12 @@ export default function LoginPage({ navigation }) {
             onChangeText={(newPassword) => setPassword(newPassword)}
             autoCapitalize='none'
           />
+        </View>
+
+        <View style={{ alignSelf: 'flex-end', marginRight: 40 }}>
+          <Text onPress={() => navigation.navigate("ForgotPassword")}>
+            Forgot Password?
+          </Text>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={() => handleLogin()}>
@@ -111,13 +114,14 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   rectangleLogin: {
-    height: 400,
     width: Dimensions.get("window").width,
     backgroundColor: "#f9f9f9",
     borderRadius: 50,
     paddingTop: 30,
+    paddingBottom: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 100
   },
   button: {
     backgroundColor: '#ec2929',
@@ -128,5 +132,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20
+  },
+  logo: {
+    width: 300,
+    resizeMode: 'contain',
+    marginBottom: -20
   }
 });

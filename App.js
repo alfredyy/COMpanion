@@ -15,6 +15,7 @@ import TodoList from './components/TodoListPage';
 import AddToDoPage from './components/AddToDoPage';
 import ShopPage from './components/ShopPage';
 import ProfilePage from './components/ProfilePage';
+import ForgotPassword from './components/ForgotPassword'
 
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -119,6 +120,7 @@ export default function App() {
           <>
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="CreateAccount" component={CreateAccountPage} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           </>
         ) : (
           <Stack.Screen name="HomeTabs" component={HomeTabs} />

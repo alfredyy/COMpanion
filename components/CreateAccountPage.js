@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView, Image } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
 import { BarPasswordStrengthDisplay } from 'react-native-password-strength-meter'
-import { Icon } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
 
 export default function CreateAccountPage({ navigation }) {
@@ -63,14 +62,14 @@ export default function CreateAccountPage({ navigation }) {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
 
-      <Icon name='smiley' type='octicon' color='#fff' size={50} />
+      <Image style={styles.logo} source={require('../assets/logo2.png')} />
 
       <Text style={{ fontSize: 24, color: 'white', fontFamily: 'Roboto', fontWeight: 'bold', margin: 10 }}>
-        welcome to the family!
+        Welcome to the family!
       </Text>
 
       <Text style={{ fontSize: 18, color: 'white', fontFamily: 'Roboto', marginBottom: 20 }}>
-        let us get to know you better
+        Let us get to know you better
       </Text>
 
       <View style={styles.rectangle}>
@@ -168,6 +167,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
     borderRadius: 50,
     alignItems: 'center',
+    marginBottom: 200
 
   },
   button: {
@@ -179,5 +179,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20
+  },
+  logo: {
+    width: 300,
+    resizeMode: 'contain',
+    marginBottom: -30
   }
 });
