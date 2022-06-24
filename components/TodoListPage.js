@@ -9,6 +9,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 
+
 import CalendarStrip from 'react-native-calendar-strip';
 import Menu, {
   MenuProvider,
@@ -20,7 +21,8 @@ import Menu, {
 import { SimpleLineIcons } from '@expo/vector-icons'; 
 import { color } from '@chakra-ui/react';
   
-export default function TodoList() {
+
+export default function TodoList() { 
   const [todos, setTodos] = useState([]);
   const[todoss, setTodoss] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,7 +39,6 @@ export default function TodoList() {
   let loading = false;
   //const [markedDatesArray, setMarkedDatesArray] = useState({});
 
-
   //Fetch tasks on selected day when clicked
       const fetchTodosday = async (selecteddate) => {
         var nowdate = new Date((new Date(selecteddate)).getTime() - 60 * 60 * 12 * 1000);
@@ -53,7 +54,7 @@ export default function TodoList() {
             if (error) {
               console.log(error);
           } else {
-            console.log('Todos: ', data);
+            console.log('Todosday: ', data);
             console.log('datetime: ', nowdate.toISOString())
             console.log('datetime: ', nextdate.toISOString())
             setTodos(data);
@@ -97,7 +98,7 @@ export default function TodoList() {
 
 
 
-    //Fetching data on 
+    
     useFocusEffect(
       React.useCallback(() => {
           let isActive = true;
@@ -407,6 +408,7 @@ export default function TodoList() {
 
 
   return (
+    
     <MenuProvider>
     <TouchableWithoutFeedback onPress={() => {
       Keyboard.dismiss();
@@ -609,11 +611,11 @@ export default function TodoList() {
 
          <View style={styles.container}>
           <CalendarStrip
-            //scrollable
+            scrollable
             //markedDates={markedDatesArrayy}
-            //onWeekScrollEnd={(start, end) => fetchTodosweek(start, end)}
-            onWeekChanged={(start, end) => fetchTodosweek(start, end)}
-            style={{height:80, paddingTop: 10, paddingBottom: 10, marginBottom: 10}}
+            onWeekScrollEnd={(start, end) => fetchTodosweek(start, end)}
+            //onWeekChanged={(start, end) => fetchTodosweek(start, end)}
+            style={{height: 95, paddingTop: 10, marginBottom: 10}}
             calendarColor={'#fff'}
             calendarHeaderStyle={{color: '#ec2929'}}
             dateNumberStyle={{color: '#ec2929'}}
