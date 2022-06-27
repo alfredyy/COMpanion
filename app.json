@@ -22,9 +22,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "foregroundImage": "./assets/logo1.png",
+        "backgroundColor": "#ec2929"
+      },
+      "package": "com.nicholas132000.COMpanion"
     },
     "web": {
       "favicon": "./assets/favicon.png"
