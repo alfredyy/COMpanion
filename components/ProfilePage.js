@@ -33,55 +33,55 @@ export default function ProfilePage({ navigation }) {
         }
     }
 
-    useFocusEffect(
-        React.useCallback(() => {
-            let isActive = true;
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         let isActive = true;
 
-            const fetchProfile = async () => {
-                try {
-                    const { data, error } = await supabaseClient
-                        .from('profiles')
-                        .select('name, owned_companions')
-                    if (isActive) {
-                        console.log(data)
-                        setName(data[0].name);
-                        setCompanionsAdopted(data[0].owned_companions.length)
-                    }
-                } catch (error) {
-                    console.log(error.message);
-                }
-            };
+    //         const fetchProfile = async () => {
+    //             try {
+    //                 const { data, error } = await supabaseClient
+    //                     .from('profiles')
+    //                     .select('name, owned_companions')
+    //                 if (isActive) {
+    //                     console.log(data)
+    //                     setName(data[0].name);
+    //                     setCompanionsAdopted(data[0].owned_companions.length)
+    //                 }
+    //             } catch (error) {
+    //                 console.log(error.message);
+    //             }
+    //         };
 
-            fetchProfile();
+    //         fetchProfile();
 
-            return () => {
-                isActive = false
-            };
-        }, []));
+    //         return () => {
+    //             isActive = false
+    //         };
+    //     }, []));
 
-    useFocusEffect(
-        React.useCallback(() => {
-            let isActive = true;
-            const fetchTodos = async () => {
-                try {
-                    const { data, error } = await supabaseClient
-                        .from('todos')
-                        .select('id', { count: 'exact' })
-                    if (isActive) {
-                        console.log(data);
-                        setTasksAdded(data.length);
-                    }
-                } catch (error) {
-                    console.log(error.message);
-                }
-            };
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         let isActive = true;
+    //         const fetchTodos = async () => {
+    //             try {
+    //                 const { data, error } = await supabaseClient
+    //                     .from('todos')
+    //                     .select('id', { count: 'exact' })
+    //                 if (isActive) {
+    //                     console.log(data);
+    //                     setTasksAdded(data.length);
+    //                 }
+    //             } catch (error) {
+    //                 console.log(error.message);
+    //             }
+    //         };
 
-            fetchTodos();
+    //         fetchTodos();
 
-            return () => {
-                isActive = false;
-            };
-        }, []));
+    //         return () => {
+    //             isActive = false;
+    //         };
+    //     }, []));
 
     return (
         <TouchableWithoutFeedback onPress={() => {
@@ -98,7 +98,7 @@ export default function ProfilePage({ navigation }) {
                         alignItems: 'baseline'
                     }}
                 />
-                <Card containerStyle={styles.cardContainer}>
+                {/* <Card containerStyle={styles.cardContainer}>
                     <View style={{ flexDirection: 'row', padding: 5 }} >
                         <Icon name='account-details' type='material-community' color='black' size={24} marginRight={10} />
                         <Text style={styles.cardTitle}>
@@ -114,7 +114,7 @@ export default function ProfilePage({ navigation }) {
                             {name}
                         </Text>
                     </View>
-                    {/* <Card.Divider />
+                    <Card.Divider />
                     <View style={styles.cardLine}>
                         <Text>
                             Email
@@ -122,7 +122,7 @@ export default function ProfilePage({ navigation }) {
                         <Text>
                             {email}
                         </Text>
-                    </View> */}
+                    </View>
                 </Card>
                 <Card containerStyle={styles.cardContainer}>
                     <View style={{ flexDirection: 'row', padding: 5 }} >
@@ -149,7 +149,7 @@ export default function ProfilePage({ navigation }) {
                             {companionsAdopted}
                         </Text>
                     </View>
-                    {/* <Card.Divider />
+                    <Card.Divider />
                     <View style={styles.cardLine}>
                         <Text>
                             Joined On
@@ -157,11 +157,55 @@ export default function ProfilePage({ navigation }) {
                         <Text>
                             {joinedOn.toString()}
                         </Text>
-                    </View> */}
-                </Card>
+                    </View>
+                </Card> */}
+
+                <TouchableOpacity style={styles.listMenu} onPress={() => navigation.navigate("Account")}>
+                    <View style={{ flexDirection: 'row', padding: 5 }} >
+                        <Icon name='account-details' type='material-community' color='grey' size={26} marginHorizontal={20} />
+                        <View style={{flexDirection:'column'}}>
+                            <Text>
+                                Account
+                            </Text>
+                            <Text style={{color:'grey'}}>
+                                Name, email, password
+                            </Text>
+                        </View>
+
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.listMenu} onPress={() => navigation.navigate("Statistics")}>
+                    <View style={{ flexDirection: 'row', padding: 5 }} >
+                        <Icon name='stats-chart' type='ionicon' color='grey' size={26} marginHorizontal={20} />
+                        <View style={{flexDirection:'column'}}>
+                            <Text>
+                                Statistics
+                            </Text>
+                            <Text style={{color:'grey'}}>
+                                ????
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.listMenu} onPress={() => navigation.navigate("AppInfo")}>
+                    <View style={{ flexDirection: 'row', padding: 5 }} >
+                        <Icon name='info' type='feather' color='grey' size={26} marginHorizontal={20} />
+                        <View style={{flexDirection:'column'}}>
+                            <Text>
+                                App Info
+                            </Text>
+                            <Text style={{color:'grey'}}>
+                                Acknowledgements
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.button} onPress={() => handleLogout()}>
                     <Icon name='logout' type='material' color='#fff' size={24} marginRight={5} />
-                    <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    <Text style={{ color: 'white', fontWeight: 'bold' }}>
                         LOGOUT
                     </Text>
                 </TouchableOpacity>
@@ -208,4 +252,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row'
     },
+    listMenu: {
+        height: 70,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'baseline',
+        backgroundColor: '#f9f9f9'
+    }
 });

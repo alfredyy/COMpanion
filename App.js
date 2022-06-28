@@ -8,18 +8,18 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-import LoginPage from './components/LoginPage';
-import CreateAccountPage from './components/CreateAccountPage';
-import HomePage from './components/HomePage';
-import TodoList from './components/TodoListPage';
+import Account from './components/Account'
 import AddToDoPage from './components/AddToDoPage';
-import ShopPage from './components/ShopPage';
-import ProfilePage from './components/ProfilePage';
+import AppInfo from './components/AppInfo';
+import CreateAccountPage from './components/CreateAccountPage';
 import ForgotPassword from './components/ForgotPassword'
+import HomePage from './components/HomePage';
+import LoginPage from './components/LoginPage';
+import ProfilePage from './components/ProfilePage';
 
-import { AntDesign } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
+import ShopPage from './components/ShopPage';
+import Statistics from './components/Statistics';
+import TodoList from './components/TodoListPage';
 
 //Navigation consts
 const Stack = createNativeStackNavigator();
@@ -123,7 +123,13 @@ export default function App() {
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           </>
         ) : (
-          <Stack.Screen name="HomeTabs" component={HomeTabs} />
+          <>
+            <Stack.Screen name="HomeTabs" component={HomeTabs} />
+            <Stack.Screen name="Account" component={Account} />
+            <Stack.Screen name="AppInfo" component={AppInfo} />
+            <Stack.Screen name="Statistics" component={Statistics} />
+            {/* <Stack.Screen name="ResetPassword" component={ResetPassword} /> */}
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
