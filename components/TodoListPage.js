@@ -1,5 +1,5 @@
 import { TextInput, Dimensions, View, StyleSheet, FlatList, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Modal, Pressable } from 'react-native';
-import { Button, Input, ListItem, CheckBox, Text, Header, Icon, Card } from 'react-native-elements';
+import { Button, Input, ListItem, CheckBox, Text, Header, Icon, Card, SearchBar } from 'react-native-elements';
 import React, { useEffect, useRef, useState } from 'react';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'
@@ -7,6 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import { useIsFocused } from '@react-navigation/native';
 
 
 
@@ -28,6 +29,8 @@ export default function TodoList() {
   const [modalVisible, setModalVisible] = useState(false);
   //const [modalVisible1, setModalVisible1] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisible3, setModalVisible3] = useState(false);
+
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
   const [datetime, setDateTime] = useState(new Date());
@@ -38,6 +41,7 @@ export default function TodoList() {
   const [iD, setID] = useState('');
   let loading = false;
   //const [markedDatesArray, setMarkedDatesArray] = useState({});
+  const isFocused = useIsFocused();
 
   //Fetch tasks on selected day when clicked
       const fetchTodosday = async (selecteddate) => {
@@ -104,7 +108,8 @@ export default function TodoList() {
           let isActive = true;
 
           const fetchTodosday = async () => {
-            var nowdate = new Date((new Date()).getTime() - 60 * 60 * 12 * 1000);
+            var d = new Date().setUTCHours(0,0,0,0);
+            var nowdate = new Date(new Date(d).getTime());
             var nextdate = new Date(nowdate.getTime() + 60 * 60 * 12 * 1000);
             nextdate.setHours(23,59,0,0)
               const { data, error } = await supabaseClient
@@ -123,12 +128,49 @@ export default function TodoList() {
               }
           }
 
-          fetchTodosday();
+        fetchTodosday();
 
           return () => {
               isActive = false
           };
       }, []));
+
+
+
+    // useFocusEffect(() => {
+
+    //       let isActive = true;
+
+    //       const fetchTodosday = async () => {
+    //         var d = new Date().setUTCHours(0,0,0,0);
+    //         var nowdate = new Date(new Date(d).getTime());
+    //         var nextdate = new Date(nowdate.getTime() + 60 * 60 * 12 * 1000);
+    //         nextdate.setHours(23,59,0,0)
+    //           const { data, error } = await supabaseClient
+    //             .from('todos')
+    //             .select('*')
+    //             .gte('datetime', nowdate.toISOString())
+    //             .lte('datetime', nextdate.toISOString())
+    //             .order('datetime', { ascending: true });
+    //             if (error) {
+    //               console.log(error);
+    //           } else {
+    //             console.log('Todos: ', data);
+    //             console.log('datetime: ', nowdate.toISOString())
+    //             console.log('datetime: ', nextdate.toISOString())
+    //             setTodos(data);
+    //           }
+    //       }
+
+    //       fetchTodosday();
+
+    //       return () => {
+    //           isActive = false
+    //       };
+    //     }
+    // );
+
+
 
 
       //Fetching data on number of coins user has
@@ -238,6 +280,10 @@ export default function TodoList() {
 
 
   };
+
+  const handleSearchButton = () => {
+    setModalVisible3(true);
+  }
 
   const deleteTodo = async id => {
     const { error } = await supabaseClient.from('todos').delete().eq('id', id);
@@ -406,8 +452,8 @@ export default function TodoList() {
 
   
 
-
-  return (
+  if (isFocused) {
+  return ( 
     
     <MenuProvider>
     <TouchableWithoutFeedback onPress={() => {
@@ -596,13 +642,36 @@ export default function TodoList() {
           </TouchableWithoutFeedback>
         </Modal>
 
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible3}
+          onRequestClose={() => {
+            setModalVisible3(!modalVisible3);
+          }}
+        >
+          <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+          }}>
+            <View style={styles.modalView1}>
 
+              {/* <View style={styles.details}>
+                <Icon name='info' type='feather' color='#fff' />
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
+                  Task Options
+                </Text>
+              </View> */}
+
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
 
       <Header
           statusBarProps={{ backgroundColor: '#ec2929' }}
           placement='left'
           leftComponent={{ icon: 'list', color: '#fff', size: 30 }}
           centerComponent={{ text: 'To Do List', style: { color: '#fff', fontWeight: 'bold', fontSize: 24 } }}
+          rightComponent={{ icon: 'search', color: '#fff', size: 30, onPress: handleSearchButton}}
           containerStyle={{
             backgroundColor: '#ec2929',
             alignItems: 'baseline'
@@ -691,9 +760,320 @@ export default function TodoList() {
     </TouchableWithoutFeedback>
     </MenuProvider>
 
-   );
+   )}
+
+   return ( 
+    
+    <MenuProvider>
+    <TouchableWithoutFeedback onPress={() => {
+      Keyboard.dismiss();
+    }}>
+      <View style={styles.container}>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+          }}>
+            <View style={styles.modalView}>
+
+              <View style={styles.details}>
+                <Icon name='info' type='feather' color='#fff' />
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
+                  Task Details
+                </Text>
+              </View>
+
+              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+                <View style={styles.descBox}>
+                  <TextInput
+                    value={name}
+                    maxLength={50}
+                    onChangeText={(itemName => setName(itemName))}
+                    multiline={true}
+                  />
+                </View>
+
+                <View style={{ flexDirection: "row" }}>
+                  <TouchableOpacity style={styles.DTBox} onPress={showDate}>
+                    <Icon name='date-range' type='material' color='gray' />
+                    <Text style={{ fontFamily: "Roboto", padding: 5 }}>
+                      {dateFormatter()}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.DTBox} onPress={showTime}>
+                    <Icon name='access-time' type='material' color='gray' />
+                    <Text style={{ fontFamily: "Roboto", padding: 5 }}>
+                      {timeFormatter()}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {show && (
+                  <DateTimePicker
+                    mode={mode}
+                    onChange={onChange}
+                    value={datetime}
+                    minimumDate={Date.now()} />
+                )}
+
+                <View style={styles.descBox}>
+                  <TextInput
+                    value={desc}
+                    multiline={true}
+                    numberOfLines={9}
+                    maxLength={280}
+                    onChangeText={(desc => setDesc(desc))}
+                    textAlignVertical='top'
+                  />
+                </View>
+
+                <Pressable
+                  style={[styles.primaryButton]}
+                  onPress={() => handleUpdate(id, name, desc, datetime)}
+                >
+                  <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    SAVE CHANGES
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.secondaryButton]}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={{ color: '#ec2929', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    HIDE
+                  </Text>
+                </Pressable>
+
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+        {/* <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible1}
+          onRequestClose={() => {
+            setModalVisible1(!modalVisible1);
+          }}
+        >
+          <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+          }}>
+            <View style={styles.modalView}>
+
+              <View style={styles.details}>
+                <Icon name='info' type='feather' color='#fff' />
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
+                  Task Completed
+                </Text>
+              </View>
+
+                <Pressable
+                  style={[styles.primaryButton1]}
+                  onPress={() => deleteTodo(id)}
+                >
+                  <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    REMOVE
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.secondaryButton1]}
+                  onPress={() => setModalVisible1(!modalVisible1)}
+                >
+                  <Text style={{ color: '#ec2929', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    CLOSE
+                  </Text>
+                </Pressable>
+
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal> */}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible2}
+          onRequestClose={() => {
+            setModalVisible2(!modalVisible2);
+          }}
+        >
+          <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+          }}>
+            <View style={styles.modalView}>
+
+              <View style={styles.details}>
+                <Icon name='info' type='feather' color='#fff' />
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
+                  Task Options
+                </Text>
+              </View>
+
+                <Pressable
+                  style={[styles.primaryButton1]}
+                  onPress={handlePressEdit}
+                >
+                  <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    EDIT
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.primaryButton1]}
+                  onPress={() => deleteTodo(id)}
+                >
+                  <Text style={{ color: 'white', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    REMOVE
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.secondaryButton1]}
+                  onPress={() => setModalVisible2(!modalVisible2)}
+                >
+                  <Text style={{ color: '#ec2929', fontFamily: "Roboto", fontWeight: 'bold' }}>
+                    CLOSE
+                  </Text>
+                </Pressable>
+
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible3}
+          onRequestClose={() => {
+            setModalVisible3(!modalVisible3);
+          }}
+        >
+          <TouchableWithoutFeedback onPress={() => {
+            Keyboard.dismiss();
+          }}>
+            <View style={styles.modalView1}>
+
+              {/* <View style={styles.details}>
+                <Icon name='info' type='feather' color='#fff' />
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
+                  Task Options
+                </Text>
+              </View> */}
+
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+      <Header
+          statusBarProps={{ backgroundColor: '#ec2929' }}
+          placement='left'
+          leftComponent={{ icon: 'list', color: '#fff', size: 30 }}
+          centerComponent={{ text: 'To Do List', style: { color: '#fff', fontWeight: 'bold', fontSize: 24 } }}
+          rightComponent={{ icon: 'search', color: '#fff', size: 30, onPress: handleSearchButton}}
+          containerStyle={{
+            backgroundColor: '#ec2929',
+            alignItems: 'baseline'
+          }}
+        />
+
+         <View style={styles.container}>
+          <CalendarStrip
+            scrollable
+            //markedDates={markedDatesArrayy}
+            onWeekScrollEnd={(start, end) => fetchTodosweek(start, end)}
+            //onWeekChanged={(start, end) => fetchTodosweek(start, end)}
+            style={{height: 95, paddingTop: 10, marginBottom: 10}}
+            calendarColor={'#fff'}
+            calendarHeaderStyle={{color: '#ec2929'}}
+            dateNumberStyle={{color: '#ec2929'}}
+            dateNameStyle={{color: '#ec2929'}}
+            iconContainer={{flex: 0.1}}
+            selectedDate={0}
+            daySelectionAnimation={{type: 'border', duration: 10, borderWidth: 1, borderHighlightColor: '#ec2929'}}
+            highlightDateNumberStyle={{color: '#ec2929'}}
+            highlightDateNameStyle={{color: '#ec2929'}}
+            onDateSelected={selectedDate => fetchTodosday(selectedDate)}
+            startingDate={new Date()}
+          />
+          <View style={{alignItems:'center'}}>
+           <FlatList
+            scrollEnabled={true}
+            data={todos}
+            keyExtractor={item => `${item.id}`}
+            renderItem={({ item: todo }) => (
+
+          <View style={styles.row}>
+             <View style={styles.time}>
+              <View style={{flexDirection: 'row'}}>
+              <Text style={[styles.mtAutoTime]}>
+                {(new Date(todo.datetime)).getDate()}
+                </Text>
+                <Text style={{color: '#A4A1A1', marginTop: 3}}>
+                {getDayname(new Date(todo.datetime))}
+              </Text>
+              </View>
+
+              <Text style={[styles.mtAutoTime1]}>
+                {timeToString(todo.datetime)}
+              </Text>
+            </View> 
 
 
+            <View style={[styles.dFlex]}>
+
+                
+                  <CheckBox
+                    checked={todo.completed}
+                    onPress={() => toggleCompleted(todo.id, todo.completed, todo.user_id)}
+                  />
+                  <Text style={[styles.mtAutoName]}>
+                    {todo.item_name}
+                  </Text>
+                
+
+                {/* <Menu onSelect={value => (value == 1) ? handlePress(todo) : deleteTodo(todo.id)}>
+                  <MenuTrigger>
+                  <SimpleLineIcons name="options-vertical" size={24} color="white" />
+                  </MenuTrigger>
+                  <MenuOptions optionsContainerStyle={{justifyContent:'space-between', paddingBottom:8, width:100,height:100}}>
+                  <MenuOption value={1} text='Edit' />
+                  <MenuOption text='Delete'>
+
+                  </MenuOption>
+                  </MenuOptions>
+                </Menu> */}
+                
+                <Pressable onPress={() => handlePress1(todo)}>
+                <SimpleLineIcons name="options-vertical" size={24} color="#ec2929" />
+                </Pressable>
+
+              </View>
+          </View>
+            )}
+          />
+          </View>
+        </View>
+        <Toast />
+      </View>
+
+    </TouchableWithoutFeedback>
+    </MenuProvider>
+
+   )
+
+
+              
 }
 
 const styles = StyleSheet.create({
@@ -751,6 +1131,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
     borderRadius: 20,
     paddingBottom: 35,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalView1: {
+    margin: 10,
+    marginTop: 52,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 20,
+    paddingBottom: 90,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
