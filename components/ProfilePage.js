@@ -36,32 +36,6 @@ export default function ProfilePage({ navigation }) {
     // useFocusEffect(
     //     React.useCallback(() => {
     //         let isActive = true;
-
-    //         const fetchProfile = async () => {
-    //             try {
-    //                 const { data, error } = await supabaseClient
-    //                     .from('profiles')
-    //                     .select('name, owned_companions')
-    //                 if (isActive) {
-    //                     console.log(data)
-    //                     setName(data[0].name);
-    //                     setCompanionsAdopted(data[0].owned_companions.length)
-    //                 }
-    //             } catch (error) {
-    //                 console.log(error.message);
-    //             }
-    //         };
-
-    //         fetchProfile();
-
-    //         return () => {
-    //             isActive = false
-    //         };
-    //     }, []));
-
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         let isActive = true;
     //         const fetchTodos = async () => {
     //             try {
     //                 const { data, error } = await supabaseClient
@@ -98,32 +72,7 @@ export default function ProfilePage({ navigation }) {
                         alignItems: 'baseline'
                     }}
                 />
-                {/* <Card containerStyle={styles.cardContainer}>
-                    <View style={{ flexDirection: 'row', padding: 5 }} >
-                        <Icon name='account-details' type='material-community' color='black' size={24} marginRight={10} />
-                        <Text style={styles.cardTitle}>
-                            Account Details
-                        </Text>
-                    </View>
-                    <Card.Divider />
-                    <View style={styles.cardLine}>
-                        <Text>
-                            Name
-                        </Text>
-                        <Text>
-                            {name}
-                        </Text>
-                    </View>
-                    <Card.Divider />
-                    <View style={styles.cardLine}>
-                        <Text>
-                            Email
-                        </Text>
-                        <Text>
-                            {email}
-                        </Text>
-                    </View>
-                </Card>
+                {/* 
                 <Card containerStyle={styles.cardContainer}>
                     <View style={{ flexDirection: 'row', padding: 5 }} >
                         <Icon name='stats-chart' type='ionicon' color='black' size={24} marginRight={10} />
@@ -197,7 +146,7 @@ export default function ProfilePage({ navigation }) {
                                 App Info
                             </Text>
                             <Text style={{color:'grey'}}>
-                                Acknowledgements
+                                User manual, acknowledgements
                             </Text>
                         </View>
                     </View>

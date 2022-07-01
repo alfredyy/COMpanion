@@ -5,9 +5,33 @@ import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto';
+import moment from 'moment';
 
 export default function Statistics({ navigation }) {
     let loading = false;
+    const [todosCount, setTodosCount] = useState([]);
+
+    const fetchTodos = async () => {
+        const { data, error } = await supabaseClient
+        .from('todos')
+        .select('id', { count: 'exact' })
+        if (error) {
+            console.log(error);
+        } else {
+            setTodosCount(data);
+        }
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            let isActive = true;
+
+            fetchTodos();
+
+            return () => {
+                isActive = false;
+            };
+        }, []));
 
     return (
         <TouchableWithoutFeedback onPress={() => {
@@ -36,3 +60,4 @@ const styles = StyleSheet.create({
         backgroundColor: '#f9f9f9',
     }
 });
+
