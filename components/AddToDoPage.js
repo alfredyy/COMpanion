@@ -51,7 +51,7 @@ export default function AddToDoPage({ navigation }) {
 
     const dateFormatter = () => {
         let day = datetime.getDate()
-        let month = datetime.getMonth()
+        let month = datetime.getMonth() + 1
         let year = datetime.getFullYear()
         return day + '/' + month + '/' + year
       }
