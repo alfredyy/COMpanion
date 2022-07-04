@@ -45,7 +45,7 @@ export default function HomePage({ navigation }) {
       setPosition(Math.floor(Math.random() * 3) + 1);
       fetchInventory();
 
-      console.log(mood)
+      
 
       return () => {
         isActive = false
@@ -68,8 +68,8 @@ export default function HomePage({ navigation }) {
     var today = new Date();
     var diffMs = (today - datetimeObj); // difference in milliseconds
     var diffMins = Math.floor((diffMs / 1000) / 60) // difference in minutes
-    var calculated = 100 - Math.floor(diffMins / 30)
-    setHealth(Math.min(Math.max(calculated, 0),100)) //Health drops by 1 point every 30 mins
+    var calculated = 100 - Math.floor(diffMins / 30) //Health drops by 1 point every 30 mins
+    setHealth(Math.min(Math.max(calculated, 0),100)) 
 
     //Ensures that if health fall belows 0, last_fed is updated to exactly 100 * 31 minutes prior to current time,
     // so that when companion is fed, the health will increase.
@@ -90,7 +90,7 @@ export default function HomePage({ navigation }) {
       setMood('happy')
       setRandomNo(Math.floor(Math.random() * 14) + 1);
     }
-
+    console.log(mood)
   }
 
   const feed = async (item) => {

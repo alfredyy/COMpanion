@@ -33,30 +33,6 @@ export default function ProfilePage({ navigation }) {
         }
     }
 
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         let isActive = true;
-    //         const fetchTodos = async () => {
-    //             try {
-    //                 const { data, error } = await supabaseClient
-    //                     .from('todos')
-    //                     .select('id', { count: 'exact' })
-    //                 if (isActive) {
-    //                     console.log(data);
-    //                     setTasksAdded(data.length);
-    //                 }
-    //             } catch (error) {
-    //                 console.log(error.message);
-    //             }
-    //         };
-
-    //         fetchTodos();
-
-    //         return () => {
-    //             isActive = false;
-    //         };
-    //     }, []));
-
     return (
         <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
@@ -72,42 +48,6 @@ export default function ProfilePage({ navigation }) {
                         alignItems: 'baseline'
                     }}
                 />
-                {/* 
-                <Card containerStyle={styles.cardContainer}>
-                    <View style={{ flexDirection: 'row', padding: 5 }} >
-                        <Icon name='stats-chart' type='ionicon' color='black' size={24} marginRight={10} />
-                        <Text style={styles.cardTitle}>
-                            Statistics
-                        </Text>
-                    </View>
-                    <Card.Divider />
-                    <View style={styles.cardLine}>
-                        <Text>
-                            Tasks Added
-                        </Text>
-                        <Text>
-                            {tasksAdded}
-                        </Text>
-                    </View>
-                    <Card.Divider />
-                    <View style={styles.cardLine}>
-                        <Text>
-                            Companions Adopted
-                        </Text>
-                        <Text>
-                            {companionsAdopted}
-                        </Text>
-                    </View>
-                    <Card.Divider />
-                    <View style={styles.cardLine}>
-                        <Text>
-                            Joined On
-                        </Text>
-                        <Text>
-                            {joinedOn.toString()}
-                        </Text>
-                    </View>
-                </Card> */}
 
                 <TouchableOpacity style={styles.listMenu} onPress={() => navigation.navigate("Account")}>
                     <View style={{ flexDirection: 'row', padding: 5 }} >
@@ -132,7 +72,7 @@ export default function ProfilePage({ navigation }) {
                                 Statistics
                             </Text>
                             <Text style={{color:'grey'}}>
-                                ????
+                                User statistics
                             </Text>
                         </View>
                     </View>
