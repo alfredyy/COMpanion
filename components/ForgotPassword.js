@@ -60,7 +60,19 @@ export default function ForgotPasswordPage({ navigation }) {
                     token,
                     type: 'recovery'
                 })
-                if (error) throw error;
+                if (error) {
+                    Toast.show({
+                        type: 'error',
+                        text1: error.message
+                    });
+                    console.log(error.message)
+                } else {
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Success!',
+                        text2: 'Reset your password in Profile > Account'
+                    });
+                }
             } catch (error) {
                 Toast.show({
                     type: 'error',

@@ -16,7 +16,6 @@ import ForgotPassword from './components/ForgotPassword'
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import ProfilePage from './components/ProfilePage';
-
 import ShopPage from './components/ShopPage';
 import Statistics from './components/Statistics';
 import TodoList from './components/TodoListPage';
@@ -128,7 +127,6 @@ export default function App() {
             <Stack.Screen name="Account" component={Account} />
             <Stack.Screen name="AppInfo" component={AppInfo} />
             <Stack.Screen name="Statistics" component={Statistics} />
-            {/* <Stack.Screen name="ResetPassword" component={ResetPassword} /> */}
           </>
         )}
       </Stack.Navigator>

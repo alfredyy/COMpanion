@@ -150,7 +150,7 @@ export default function AddToDoPage({ navigation }) {
                     <View style={styles.inputFieldDesc}>
                         <TextInput
                             style={styles.inputTextDesc}
-                            placeholder='Notes'
+                            placeholder='Notes (Optional)'
                             multiline={true}
                             numberOfLines={9}
                             maxLength={280}
