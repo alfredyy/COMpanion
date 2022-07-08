@@ -39,12 +39,15 @@ export default function TodoList() {
   const [id, setId] = useState('');
   const [currency, setCurrency] = useState(0);
   const [iD, setID] = useState('');
+  const [chosenDate, setChosenDate] = useState(new Date());
   let loading = false;
   //const [markedDatesArray, setMarkedDatesArray] = useState({});
   const isFocused = useIsFocused();
 
   //Fetch tasks on selected day when clicked
       const fetchTodosday = async (selecteddate) => {
+        setChosenDate(selecteddate);
+        console.log(chosenDate);
         var nowdate = new Date((new Date(selecteddate)).getTime() - 60 * 60 * 12 * 1000);
         // var nextdate = selecteddate.setHours(selecteddate.getHours() + 24)
         var nextdate = new Date(nowdate.getTime() + 60 * 60 * 12 * 1000);
@@ -107,9 +110,31 @@ export default function TodoList() {
       React.useCallback(() => {
           let isActive = true;
 
+          // const fetchTodosday = async () => {
+          //   var d = new Date().setUTCHours(0,0,0,0);
+          //   var nowdate = new Date(new Date(d).getTime());
+          //   var nextdate = new Date(nowdate.getTime() + 60 * 60 * 12 * 1000);
+          //   nextdate.setHours(23,59,0,0)
+          //     const { data, error } = await supabaseClient
+          //       .from('todos')
+          //       .select('*')
+          //       .gte('datetime', nowdate.toISOString())
+          //       .lte('datetime', nextdate.toISOString())
+          //       .order('datetime', { ascending: true });
+          //       if (error) {
+          //         console.log(error);
+          //     } else {
+          //       console.log('Todos: ', data);
+          //       console.log('datetime: ', nowdate.toISOString())
+          //       console.log('datetime: ', nextdate.toISOString())
+          //       setTodos(data);
+          //     }
+          // }
+
+          //console.log(chosenDate);
           const fetchTodosday = async () => {
-            var d = new Date().setUTCHours(0,0,0,0);
-            var nowdate = new Date(new Date(d).getTime());
+            var nowdate = new Date((new Date()).getTime() - 60 * 60 * 12 * 1000);
+            // var nextdate = chosenDate.setHours(selecteddate.getHours() + 24)
             var nextdate = new Date(nowdate.getTime() + 60 * 60 * 12 * 1000);
             nextdate.setHours(23,59,0,0)
               const { data, error } = await supabaseClient
@@ -121,7 +146,7 @@ export default function TodoList() {
                 if (error) {
                   console.log(error);
               } else {
-                console.log('Todos: ', data);
+                console.log('Todosday: ', data);
                 console.log('datetime: ', nowdate.toISOString())
                 console.log('datetime: ', nextdate.toISOString())
                 setTodos(data);
