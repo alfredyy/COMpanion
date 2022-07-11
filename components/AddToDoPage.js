@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 
 
 
+
 export default function AddToDoPage({ navigation }) {
     const [item_name, setItemName] = useState('')
     const [datetime, setDateTime] = useState(new Date())
@@ -51,7 +52,7 @@ export default function AddToDoPage({ navigation }) {
 
     const dateFormatter = () => {
         let day = datetime.getDate()
-        let month = datetime.getMonth() + 1
+        let month = datetime.getMonth()
         let year = datetime.getFullYear()
         return day + '/' + month + '/' + year
       }
@@ -150,7 +151,7 @@ export default function AddToDoPage({ navigation }) {
                     <View style={styles.inputFieldDesc}>
                         <TextInput
                             style={styles.inputTextDesc}
-                            placeholder='Notes (Optional)'
+                            placeholder='Notes'
                             multiline={true}
                             numberOfLines={9}
                             maxLength={280}

@@ -23,7 +23,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 import { color } from '@chakra-ui/react';
   
 
-export default function TodoList() { 
+export default function TodoList({ navigation }) { 
   const [todos, setTodos] = useState([]);
   const[todoss, setTodoss] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -133,6 +133,7 @@ export default function TodoList() {
 
           //console.log(chosenDate);
           const fetchTodosday = async () => {
+            setChosenDate(new Date());
             var nowdate = new Date((new Date()).getTime() - 60 * 60 * 12 * 1000);
             // var nextdate = chosenDate.setHours(selecteddate.getHours() + 24)
             var nextdate = new Date(nowdate.getTime() + 60 * 60 * 12 * 1000);
@@ -307,7 +308,8 @@ export default function TodoList() {
   };
 
   const handleSearchButton = () => {
-    setModalVisible3(true);
+    //setModalVisible3(true);
+    navigation.navigate('SearchTask')
   }
 
   const deleteTodo = async id => {
@@ -475,6 +477,23 @@ export default function TodoList() {
       }
     }
 
+    const searchName = async (input) => {
+      const { data, error } = await supabaseClient
+       .from('todos')
+       .select('*')
+       .order('datetime', { ascending: true });
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('AllTodos: ', data);
+        //setTodos(data);
+      }
+      const newData = data.filter((item) => {
+        return item.item_name.toLowerCase().startsWith(input.toLowerCase())
+      })
+      setTodos(newData)
+    }
+
   
 
   if (isFocused) {
@@ -490,9 +509,9 @@ export default function TodoList() {
           animationType="slide"
           transparent={true}
           visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
+          // onRequestClose={() => {
+          //   setModalVisible(!modalVisible);
+          // }}
         >
           <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
@@ -620,9 +639,10 @@ export default function TodoList() {
           animationType="slide"
           transparent={true}
           visible={modalVisible2}
-          onRequestClose={() => {
-            setModalVisible2(!modalVisible2);
-          }}
+          //onRequestClose={(chosenDate) => fetchTodosday(chosenDate.setUTCHours(0,0,0,0))}
+          //onAfterClose={(chosenDate) => fetchTodosday(chosenDate.setUTCHours(0,0,0,0))}
+          //shouldReturnFocusAfterClose={true}
+          //onRequestClose={fetchTodosday(new Date((new Date()).setUTCHours(0,0,0,0)))}
         >
           <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
@@ -679,13 +699,20 @@ export default function TodoList() {
             Keyboard.dismiss();
           }}>
             <View style={styles.modalView1}>
+            
+              <View style={styles.inputField}>
+                <TextInput
+                  placeholder='Search Task'
+                  maxLength={50}
+                  onChangeText={(input) => searchName(input)}
+                />
+              </View>
 
-              {/* <View style={styles.details}>
-                <Icon name='info' type='feather' color='#fff' />
-                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
-                  Task Options
-                </Text>
-              </View> */}
+              <Pressable onPress={() => setModalVisible3(!modalVisible3)}>
+                <View>
+                  <Icon name='closecircle' type='antdesign' color='#ec2929' size={24} />
+                </View>
+             </Pressable>
 
             </View>
           </TouchableWithoutFeedback>
@@ -799,9 +826,9 @@ export default function TodoList() {
           animationType="slide"
           transparent={true}
           visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
+          // onRequestClose={() => {
+          //   setModalVisible(!modalVisible);
+          // }}
         >
           <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
@@ -929,9 +956,9 @@ export default function TodoList() {
           animationType="slide"
           transparent={true}
           visible={modalVisible2}
-          onRequestClose={() => {
-            setModalVisible2(!modalVisible2);
-          }}
+          // onRequestClose={() => {
+          //   setModalVisible2(!modalVisible2);
+          // }}
         >
           <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss();
@@ -989,12 +1016,19 @@ export default function TodoList() {
           }}>
             <View style={styles.modalView1}>
 
-              {/* <View style={styles.details}>
-                <Icon name='info' type='feather' color='#fff' />
-                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 24, paddingLeft: 20 }}>
-                  Task Options
-                </Text>
-              </View> */}
+            <View style={styles.inputField}>
+                <TextInput
+                  placeholder='Search Task'
+                  maxLength={50}
+                  onChangeText={(input) => searchName(input)}
+                />
+              </View>
+
+              <Pressable onPress={() => setModalVisible3(!modalVisible3)}>
+                <View>
+                  <Icon name='closecircle' type='antdesign' color='#ec2929' size={24} />
+                </View>
+             </Pressable>
 
             </View>
           </TouchableWithoutFeedback>
@@ -1167,10 +1201,12 @@ const styles = StyleSheet.create({
   },
   modalView1: {
     margin: 10,
-    marginTop: 52,
+    marginTop: 53,
     backgroundColor: "#f9f9f9",
     borderRadius: 20,
-    paddingBottom: 90,
+    //borderWidth: 1,
+    paddingBottom: 10,
+    //marginBottom: 90,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -1254,6 +1290,18 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginBottom: 20
+  },
+  inputField: {
+    backgroundColor: "#fff",
+    width: 350,
+    borderRadius: 25,
+    height: 40,
+    borderWidth: 1,
+    borderColor: 'black',
+    justifyContent: 'center',
+    alignItems: "center",
+    margin: 10
+
   }
 });
 

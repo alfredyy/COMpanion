@@ -19,6 +19,7 @@ import ProfilePage from './components/ProfilePage';
 import ShopPage from './components/ShopPage';
 import Statistics from './components/Statistics';
 import TodoList from './components/TodoListPage';
+import SearchTask from './components/SearchTask'
 
 //Navigation consts
 const Stack = createNativeStackNavigator();
@@ -127,6 +128,7 @@ export default function App() {
             <Stack.Screen name="Account" component={Account} />
             <Stack.Screen name="AppInfo" component={AppInfo} />
             <Stack.Screen name="Statistics" component={Statistics} />
+            <Stack.Screen name="SearchTask" component={SearchTask} />
           </>
         )}
       </Stack.Navigator>
