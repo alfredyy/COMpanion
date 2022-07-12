@@ -419,6 +419,7 @@ export default function TodoList({ navigation }) {
         type: 'success',
         text1: 'Task Updated!',
       });
+      fetchTodosday(chosenDate)
     }
 
   }
@@ -477,22 +478,6 @@ export default function TodoList({ navigation }) {
       }
     }
 
-    const searchName = async (input) => {
-      const { data, error } = await supabaseClient
-       .from('todos')
-       .select('*')
-       .order('datetime', { ascending: true });
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('AllTodos: ', data);
-        //setTodos(data);
-      }
-      const newData = data.filter((item) => {
-        return item.item_name.toLowerCase().startsWith(input.toLowerCase())
-      })
-      setTodos(newData)
-    }
 
   
 

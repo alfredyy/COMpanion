@@ -38,29 +38,29 @@ export default function SearchTask({ navigation }) {
     //const [markedDatesArray, setMarkedDatesArray] = useState({});
     const isFocused = useIsFocused();
   
-      useFocusEffect(
-        React.useCallback(() => {
-            let isActive = true;
+      // useFocusEffect(
+      //   React.useCallback(() => {
+      //       let isActive = true;
 
-            const fetchTodosAll = async () => {
-             const { data, error } = await supabaseClient
-              .from('todos')
-              .select('*')
-              .order('datetime', { ascending: true });
-             if (error) {
-              console.log(error);
-             } else {
-               console.log('AllTodos: ', data);
-               setTodos(data)
-             }
-        }
+      //       const fetchTodosAll = async () => {
+      //        const { data, error } = await supabaseClient
+      //         .from('todos')
+      //         .select('*')
+      //         .order('datetime', { ascending: true });
+      //        if (error) {
+      //         console.log(error);
+      //        } else {
+      //          console.log('AllTodos: ', data);
+      //          setTodos(data)
+      //        }
+      //   }
   
-          fetchTodosAll();
+      //     fetchTodosAll();
   
-            return () => {
-                isActive = false
-            };
-        }, []));
+      //       return () => {
+      //           isActive = false
+      //       };
+      //   }, []));
   
         //Fetching data on number of coins user has
         useFocusEffect(
@@ -344,21 +344,36 @@ export default function SearchTask({ navigation }) {
         }
       }
   
+      // const searchName = async (input) => {
+      //   const { data, error } = await supabaseClient
+      //    .from('todos')
+      //    .select('*')
+      //    .order('datetime', { ascending: true });
+      //   if (error) {
+      //     console.log(error);
+      //   } else {
+      //     console.log('AllTodos: ', data);
+      //     //setTodos(data);
+      //   }
+      //   const newData = data.filter((item) => {
+      //     return item.item_name.toLowerCase().startsWith(input.toLowerCase())
+      //   })
+      //   setTodos(newData)
+      // }
+
       const searchName = async (input) => {
         const { data, error } = await supabaseClient
          .from('todos')
-         .select('*')
+         .select()
+         .textSearch('item_name', `${input}`)
          .order('datetime', { ascending: true });
         if (error) {
           console.log(error);
         } else {
           console.log('AllTodos: ', data);
-          //setTodos(data);
+
         }
-        const newData = data.filter((item) => {
-          return item.item_name.toLowerCase().startsWith(input.toLowerCase())
-        })
-        setTodos(newData)
+        setTodos(data)
       }
   
     return ( 
