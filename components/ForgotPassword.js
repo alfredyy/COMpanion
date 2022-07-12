@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, StatusBar, ScrollView, Image } from 'react-native';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto'

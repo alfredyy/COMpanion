@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Keyboard, TouchableOpacity, StatusBar, Dimensions, TextInput } from 'react-native';
-import { Header, Icon, Card } from 'react-native-elements';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Keyboard, TouchableOpacity, TextInput } from 'react-native';
+import { Header } from 'react-native-elements';
 import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { supabaseClient } from '../supabaseClient';
@@ -277,8 +277,5 @@ const styles = StyleSheet.create({
     mainTitles: {
         fontWeight: 'bold',
         marginTop: 20
-    },
-    rectangle: {
-
     }
 });

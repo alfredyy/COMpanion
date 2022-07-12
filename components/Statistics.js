@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
-import { Header, Icon, Card } from 'react-native-elements';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Header } from 'react-native-elements';
 import { useFocusEffect } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { supabaseClient } from '../supabaseClient';
 import 'react-native-url-polyfill/auto';
-import moment from 'moment';
 
 export default function Statistics({ navigation }) {
     let loading = false;

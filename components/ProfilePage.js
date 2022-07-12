@@ -86,7 +86,7 @@ export default function ProfilePage({ navigation }) {
                                 App Info
                             </Text>
                             <Text style={{color:'grey'}}>
-                                User manual, acknowledgements
+                                About, how to use, acknowledgement links
                             </Text>
                         </View>
                     </View>
